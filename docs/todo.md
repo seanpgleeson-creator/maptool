@@ -8,10 +8,10 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md).
 
 ## 1. Repo and hosting (do first)
 
-- [ ] Ensure GitHub repo exists and local project is connected (git init, remote, first push).
-- [ ] Create Vercel project and link to GitHub repo; enable production deploys from `main` (and optional previews from PRs).
-- [ ] Add `.gitignore` (e.g. `.env`, `node_modules/`, `.vercel`, build outputs, OS files); add `.env.example` with placeholders (e.g. `DATABASE_URL`, `OPENAI_API_KEY`, storage keys).
-- [ ] Deploy a minimal placeholder (e.g. "MAPtool" landing page) to Vercel and confirm production URL works.
+- [x] Ensure GitHub repo exists and local project is connected (git init, remote, first push).
+- [x] Create Vercel project and link to GitHub repo; enable production deploys from `main` (and optional previews from PRs).
+- [x] Add `.gitignore` (e.g. `.env`, `node_modules/`, `.vercel`, build outputs, OS files); add `.env.example` with placeholders (e.g. `DATABASE_URL`, `OPENAI_API_KEY`, storage keys).
+- [x] Deploy a minimal placeholder (e.g. "MAPtool" landing page) to Vercel and confirm production URL works.
 
 *Outcome:* Repo on GitHub, app on Vercel, production URL known; future work is "ship and test in production."
 
