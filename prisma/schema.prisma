@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AssessmentStatus {
+  pending
+  running
+  completed
+  failed
+}
+
+enum AssessmentMode {
+  single
+  bulk
+}
+
+enum CompetitorSource {
+  amazon
+  walmart
+}
+
+enum RecommendationAction {
+  discuss
+  proceed
+}
+
+model Assessment {
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  status      AssessmentStatus  @default(pending)
+  mode        AssessmentMode
+  step        String?
+  errorMessage String?
+
+  items        AssessmentItem[]
+  policyDoc    PolicyDocument?
+  policyAnalysis PolicyAnalysis?
+  recommendation Recommendation?
+
+  @@index([createdAt])
+  @@index([status])
+}
+
+model AssessmentItem {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  upc          String
+  mapPrice     Decimal
+  productLabel String?
+
+  competitorPrices CompetitorPrice[]
+
+  @@index([assessmentId])
+  @@index([upc])
+}
+
+model PolicyDocument {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+
+  assessmentId String   @unique
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  fileKey      String?
+  fileType     String?
+  extractedText String?
+  extractedAt  DateTime?
+}
+
+model CompetitorPrice {
+  id              String           @id @default(cuid())
+  createdAt       DateTime         @default(now())
+
+  assessmentItemId String
+  assessmentItem   AssessmentItem  @relation(fields: [assessmentItemId], references: [id], onDelete: Cascade)
+
+  source          CompetitorSource
+  price           Decimal?
+  currency        String           @default("USD")
+  scrapedAt       DateTime?
+  listingUrl      String?
+  errorMessage    String?
+
+  @@unique([assessmentItemId, source])
+  @@index([source])
+}
+
+model PolicyAnalysis {
+  id                    String    @id @default(cuid())
+  createdAt             DateTime  @default(now())
+
+  assessmentId          String    @unique
+  assessment            Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  appliesToAllRetailers Boolean?
+  segmentDescription    String?
+  consequencesSpecific  Boolean?
+  consequencesSummary   String?
+}
+
+model Recommendation {
+  id           String               @id @default(cuid())
+  createdAt    DateTime             @default(now())
+
+  assessmentId String               @unique
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  action       RecommendationAction
+  reasons      Json
+  perItemSummary Json?
+}
