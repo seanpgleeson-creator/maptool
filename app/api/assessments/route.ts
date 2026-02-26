@@ -1,58 +1,198 @@
-import { z } from 'zod'
-
+import { put } from '@vercel/blob'
 import { getPrisma } from '@/lib/db'
+import { analyzePolicy } from '@/lib/analyzePolicy'
+import { extractPolicyText } from '@/lib/extractPolicyText'
 
-const CreateAssessmentSchema = z.object({
-  upc: z.string().min(1),
-  map_price: z.number().positive(),
-})
+const ALLOWED_TYPES = [
+  'application/pdf',
+  'application/msword', // .doc
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+] as const
+const MAX_FILE_BYTES = 10 * 1024 * 1024 // 10 MB
 
 export async function POST(req: Request) {
-  let body: unknown
+  let formData: FormData
   try {
-    body = await req.json()
+    formData = await req.formData()
   } catch {
-    return Response.json({ error: 'Invalid JSON body.' }, { status: 400 })
+    return Response.json(
+      { error: 'Invalid form data. Send multipart/form-data with upc, map_price, and policy.' },
+      { status: 400 },
+    )
   }
 
-  const parsed = CreateAssessmentSchema.safeParse(body)
-  if (!parsed.success) {
+  const upc = (formData.get('upc') ?? '').toString().trim()
+  const mapPriceRaw = formData.get('map_price')
+  const mapPrice =
+    typeof mapPriceRaw === 'string'
+      ? Number(mapPriceRaw)
+      : typeof mapPriceRaw === 'number'
+        ? mapPriceRaw
+        : NaN
+  const policyFile = formData.get('policy') as File | null
+
+  if (!upc) {
+    return Response.json({ error: 'UPC is required.' }, { status: 400 })
+  }
+  if (!Number.isFinite(mapPrice) || mapPrice <= 0) {
     return Response.json(
-      { error: 'Invalid input.', details: parsed.error.flatten() },
+      { error: 'MAP price is required and must be a positive number.' },
+      { status: 400 },
+    )
+  }
+  if (!policyFile || !(policyFile instanceof File) || policyFile.size === 0) {
+    return Response.json(
+      { error: 'Policy document (PDF or Word) is required.' },
+      { status: 400 },
+    )
+  }
+
+  const mime = (policyFile.type || 'application/octet-stream').toLowerCase()
+  const allowed =
+    ALLOWED_TYPES.includes(mime as (typeof ALLOWED_TYPES)[number]) ||
+    mime === 'application/octet-stream'
+  if (!allowed) {
+    return Response.json(
+      {
+        error: `Unsupported policy file type. Use .pdf or .doc/.docx. Got: ${policyFile.type || 'unknown'}.`,
+      },
+      { status: 400 },
+    )
+  }
+  if (policyFile.size > MAX_FILE_BYTES) {
+    return Response.json(
+      { error: 'Policy file is too large. Maximum size is 10 MB.' },
       { status: 400 },
     )
   }
 
   try {
     const prisma = getPrisma()
+    const arrayBuffer = await policyFile.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
+    // Optional: upload to Vercel Blob (if configured)
+    let fileKey: string | null = null
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const blob = await put(
+        `policies/${Date.now()}-${policyFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`,
+        buffer,
+        { access: 'private', addRandomSuffix: true },
+      )
+      fileKey = blob.url
+    }
 
     const assessment = await prisma.assessment.create({
       data: {
         mode: 'single',
-        status: 'pending',
-        step: 'created',
+        status: 'running',
+        step: 'extracting_policy',
         items: {
           create: [
             {
-              upc: parsed.data.upc,
-              mapPrice: parsed.data.map_price.toFixed(2),
+              upc,
+              mapPrice: mapPrice.toFixed(2),
             },
           ],
+        },
+        policyDoc: {
+          create: {
+            fileKey,
+            fileType: policyFile.type || null,
+          },
         },
         recommendation: {
           create: {
             action: 'discuss',
-            reasons: [
-              'Stub: competitor checks and policy review are not implemented yet.',
-            ],
+            reasons: ['Policy review in progress.'],
           },
         },
       },
-      select: { id: true, status: true },
+      include: { policyDoc: true },
+    })
+
+    const policyDocId = assessment.policyDoc!.id
+
+    // Extract text
+    const extractResult = await extractPolicyText(buffer, mime)
+    const extractedText =
+      'text' in extractResult ? extractResult.text : null
+    const extractError = 'error' in extractResult ? extractResult.error : null
+
+    await prisma.policyDocument.update({
+      where: { id: policyDocId },
+      data: {
+        extractedText,
+        extractedAt: extractedText ? new Date() : null,
+      },
+    })
+
+    await prisma.assessment.update({
+      where: { id: assessment.id },
+      data: { step: 'analyzing_policy' },
+    })
+
+    const reasons: string[] = []
+    let action: 'discuss' | 'proceed' = 'discuss'
+
+    if (!extractedText) {
+      reasons.push(
+        extractError ?? 'Could not read the policy document. Upload a clear PDF or Word file.',
+      )
+    } else {
+      const apiKey = process.env.OPENAI_API_KEY
+      if (!apiKey) {
+        reasons.push(
+          'Policy text was extracted, but analysis is not configured (missing OPENAI_API_KEY).',
+        )
+      } else {
+        const analysisResult = await analyzePolicy(extractedText, apiKey)
+        if (!analysisResult.ok) {
+          reasons.push(analysisResult.error)
+        } else {
+          const r = analysisResult.result
+          await prisma.policyAnalysis.create({
+            data: {
+              assessmentId: assessment.id,
+              appliesToAllRetailers: r.appliesToAllRetailers,
+              segmentDescription: r.segmentDescription,
+              consequencesSpecific: r.consequencesSpecific,
+              consequencesSummary: r.consequencesSummary,
+            },
+          })
+          if (!r.appliesToAllRetailers && r.segmentDescription) {
+            reasons.push(`Policy applies only to: ${r.segmentDescription}`)
+          }
+          if (!r.consequencesSpecific) {
+            reasons.push(
+              'Policy does not state specific consequences for violations. Consider asking the vendor for clear steps.',
+            )
+          }
+          if (r.consequencesSpecific && r.consequencesSummary) {
+            reasons.push(`Consequences: ${r.consequencesSummary}`)
+          }
+          if (r.appliesToAllRetailers && r.consequencesSpecific) {
+            action = 'proceed'
+            if (reasons.length === 0) {
+              reasons.push('Policy applies to all retailers and has specific consequences.')
+            }
+          }
+        }
+      }
+    }
+
+    await prisma.recommendation.update({
+      where: { assessmentId: assessment.id },
+      data: { action, reasons },
+    })
+
+    await prisma.assessment.update({
+      where: { id: assessment.id },
+      data: { status: 'completed', step: 'policy_reviewed' },
     })
 
     return Response.json(
-      { assessment_id: assessment.id, status: assessment.status },
+      { assessment_id: assessment.id, status: 'completed' },
       { status: 201 },
     )
   } catch (err) {
@@ -71,4 +211,3 @@ export async function POST(req: Request) {
     )
   }
 }
-

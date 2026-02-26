@@ -58,19 +58,33 @@ export function ResultsClient({ id }: { id: string }) {
 
   useEffect(() => {
     let cancelled = false
+    let intervalId: ReturnType<typeof setInterval> | null = null
 
-    async function fetchOnce() {
+    async function fetchOnce(): Promise<AssessmentResponse | null> {
       const res = await fetch(`/api/assessments/${id}`, { cache: 'no-store' })
       const json = (await res.json()) as AssessmentResponse
-      if (!cancelled) setData(json)
-      if (!cancelled) setLoading(false)
+      if (!cancelled) {
+        setData(json)
+        setLoading(false)
+      }
+      return json
     }
 
-    fetchOnce()
-    const interval = setInterval(fetchOnce, 1500)
+    void fetchOnce().then((json) => {
+      if (cancelled || json?.status === 'completed') return
+      intervalId = setInterval(() => {
+        void fetchOnce().then((next) => {
+          if (next?.status === 'completed' && intervalId) {
+            clearInterval(intervalId)
+            intervalId = null
+          }
+        })
+      }, 1500)
+    })
+
     return () => {
       cancelled = true
-      clearInterval(interval)
+      if (intervalId) clearInterval(intervalId)
     }
   }, [id])
 
@@ -93,7 +107,7 @@ export function ResultsClient({ id }: { id: string }) {
         </div>
       </Card>
 
-      <Card title="Competitive prices (stub)">
+      <Card title="Competitive prices">
         {item ? (
           <div>
             <div>
@@ -103,7 +117,8 @@ export function ResultsClient({ id }: { id: string }) {
               <strong>MAP:</strong> {item.map_price}
             </div>
             <div style={{ color: '#666', marginTop: 6 }}>
-              Amazon and Walmart checks will appear here in the next phase.
+              Amazon and Walmart price checks will appear here in a future
+              update.
             </div>
           </div>
         ) : (
@@ -111,22 +126,85 @@ export function ResultsClient({ id }: { id: string }) {
         )}
       </Card>
 
-      <Card title="Policy review (stub)">
-        <div style={{ color: '#666' }}>
-          Policy upload + AI analysis will be added in the next phase.
-        </div>
+      <Card title="Policy applicability">
+        {data?.policy_analysis ? (
+          <div>
+            {data.policy_analysis.applies_to_all_retailers ? (
+              <p style={{ margin: 0 }}>
+                Applies to all retailers. No segment restriction.
+              </p>
+            ) : (
+              <div>
+                <p style={{ margin: 0, fontWeight: 600, color: '#b45309' }}>
+                  Applies only to a specific segment
+                </p>
+                {data.policy_analysis.segment_description ? (
+                  <p style={{ margin: '0.25rem 0 0 0', color: '#333' }}>
+                    {data.policy_analysis.segment_description}
+                  </p>
+                ) : null}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{ color: '#666' }}>
+            No policy was uploaded or analysis is not available.
+          </div>
+        )}
       </Card>
 
-      <Card title="Next steps (stub)">
-        <div>
+      <Card title="Policy consequences">
+        {data?.policy_analysis ? (
           <div>
-            <strong>Recommendation:</strong>{' '}
-            {data?.recommendation?.action ?? '—'}
+            {data.policy_analysis.consequences_specific ? (
+              <div>
+                <p style={{ margin: 0, fontWeight: 600 }}>
+                  Policy states specific consequences for violations.
+                </p>
+                {data.policy_analysis.consequences_summary ? (
+                  <p style={{ margin: '0.5rem 0 0 0', color: '#333' }}>
+                    {data.policy_analysis.consequences_summary}
+                  </p>
+                ) : null}
+              </div>
+            ) : (
+              <p style={{ margin: 0, color: '#b45309' }}>
+                Consequences are not specific. Consider asking the vendor for
+                clear steps (e.g. first violation: warning; second: supply
+                cutoff; third: termination).
+              </p>
+            )}
           </div>
-          <div style={{ color: '#666', marginTop: 6 }}>
-            This is a placeholder until competitor checks and policy review are
-            implemented.
+        ) : (
+          <div style={{ color: '#666' }}>No policy analysis available.</div>
+        )}
+      </Card>
+
+      <Card title="Next steps">
+        <div>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>
+            {data?.recommendation?.action === 'proceed' ? (
+              <span style={{ color: '#0d7a0d' }}>Proceed</span>
+            ) : (
+              <span style={{ color: '#b45309' }}>Discuss with vendor</span>
+            )}
           </div>
+          {Array.isArray(data?.recommendation?.reasons) &&
+          data.recommendation.reasons.length > 0 ? (
+            <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
+              {(data.recommendation.reasons as string[]).map((r, i) => (
+                <li key={i} style={{ marginBottom: 4 }}>
+                  {r}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p style={{ margin: 0, color: '#666' }}>
+              {data?.recommendation?.action === 'proceed'
+                ? 'Policy looks acceptable from an applicability and consequences standpoint. Competitor price checks (coming later) will refine this.'
+                : 'Review the policy applicability and consequences above and consider discussing with the vendor.'}
+            </p>
+          )}
         </div>
       </Card>
     </div>
