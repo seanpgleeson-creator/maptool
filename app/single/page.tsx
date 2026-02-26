@@ -35,7 +35,11 @@ export default function SingleItemPage() {
       formData.set('policy', file)
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 90000) // 90s client timeout
-      const res = await fetch('/api/assessments', {
+      const apiUrl =
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/api/assessments`
+          : '/api/assessments'
+      const res = await fetch(apiUrl, {
         method: 'POST',
         body: formData,
         signal: controller.signal,

@@ -6,6 +6,13 @@ import { extractPolicyText } from '@/lib/extractPolicyText'
 // Allow up to 60s so PDF extraction + OpenAI can finish (Vercel Hobby max is 60s)
 export const maxDuration = 60
 
+export function GET() {
+  return Response.json(
+    { error: 'Method not allowed. Use POST to create an assessment.' },
+    { status: 405, headers: { Allow: 'POST' } },
+  )
+}
+
 const ALLOWED_TYPES = [
   'application/pdf',
   'application/msword', // .doc
