@@ -19,10 +19,10 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md).
 
 ## 2. Stack and foundation
 
-- [ ] Choose and document stack: e.g. Next.js (or similar) for Vercel; DB (Postgres — Vercel Postgres, Neon, or Supabase); object storage (Vercel Blob or S3); background jobs (Vercel serverless background, QStash, or separate worker).
-- [ ] Implement data model (backend): Assessment, AssessmentItem, PolicyDocument, CompetitorPrice, PolicyAnalysis, Recommendation (per backend.md).
-- [ ] Add API skeleton: `POST /api/assessments` (single: UPC, map_price, policy file) returns `assessment_id`, `status: pending`; `GET /api/assessments/[id]` returns status and, when done, full result shape (stub/mock OK).
-- [ ] Add frontend skeleton: Home with "Single item" / "Bulk upload" choice; Single-item page with form (UPC, MAP price, policy file upload) and "Run assessment" CTA; Results page that accepts `assessment_id` (e.g. from query) and polls `GET /api/assessments/[id]` and shows status + placeholder result.
+- [x] Choose and document stack: e.g. Next.js (or similar) for Vercel; DB (Postgres — Vercel Postgres, Neon, or Supabase); object storage (Vercel Blob or S3); background jobs (Vercel serverless background, QStash, or separate worker).
+- [x] Implement data model (backend): Assessment, AssessmentItem, PolicyDocument, CompetitorPrice, PolicyAnalysis, Recommendation (per backend.md).
+- [x] Add API skeleton: `POST /api/assessments` (single: UPC, map_price, policy file) returns `assessment_id`, `status: pending`; `GET /api/assessments/[id]` returns status and, when done, full result shape (stub/mock OK).
+- [x] Add frontend skeleton: Home with "Single item" / "Bulk upload" choice; Single-item page with form (UPC, MAP price, policy file upload) and "Run assessment" CTA; Results page that accepts `assessment_id` (e.g. from query) and polls `GET /api/assessments/[id]` and shows status + placeholder result.
 
 **[PARALLEL]** Backend: stack + DB schema + API routes **|** Frontend: Next.js app + Home + Single-item form + Results page (stub polling). Contract: API request/response shapes above.
 
