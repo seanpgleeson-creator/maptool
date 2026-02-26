@@ -3,7 +3,7 @@ import { PDFParse } from 'pdf-parse'
 
 export type ExtractResult = { text: string } | { error: string }
 
-const MAX_FILE_BYTES = 10 * 1024 * 1024 // 10 MB
+const MAX_FILE_BYTES = 4 * 1024 * 1024 // 4 MB (aligned with API/Vercel limit)
 
 export async function extractPolicyText(
   buffer: Buffer,

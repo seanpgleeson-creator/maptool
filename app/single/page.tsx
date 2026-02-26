@@ -19,24 +19,61 @@ export default function SingleItemPage() {
       setError('Please select a policy document (PDF or Word).')
       return
     }
+    // Stay under Vercel 4.5 MB request body limit (use 4 MB to leave room for form fields)
+    const MAX_FILE_BYTES = 4 * 1024 * 1024
+    if (file.size > MAX_FILE_BYTES) {
+      setError(
+        'Policy file is too large. Use a file under 4 MB to avoid upload limits.',
+      )
+      return
+    }
     setSubmitting(true)
     try {
       const formData = new FormData()
       formData.set('upc', upc.trim())
       formData.set('map_price', mapPrice)
       formData.set('policy', file)
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 90000) // 90s client timeout
       const res = await fetch('/api/assessments', {
         method: 'POST',
         body: formData,
+        signal: controller.signal,
       })
-      const data = await res.json()
-      if (!res.ok) {
-        setError(data?.error ?? 'Failed to create assessment.')
+      clearTimeout(timeoutId)
+      const text = await res.text()
+      let data: { error?: string; assessment_id?: string }
+      try {
+        data = text ? JSON.parse(text) : {}
+      } catch {
+        setError(
+          res.ok
+            ? 'Invalid response from server.'
+            : `Server error (${res.status}). Try a smaller file or try again.`,
+        )
         return
       }
-      router.push(`/assessments/${data.assessment_id}`)
-    } catch {
-      setError('Network error. Please try again.')
+      if (!res.ok) {
+        setError(data?.error ?? `Request failed (${res.status}).`)
+        return
+      }
+      if (data.assessment_id) {
+        router.push(`/assessments/${data.assessment_id}`)
+      } else {
+        setError('Missing assessment ID in response.')
+      }
+    } catch (err) {
+      const msg =
+        err instanceof Error
+          ? err.name === 'AbortError'
+            ? 'Request timed out. Try a smaller policy file or try again.'
+            : err.message || 'Network error.'
+          : String(err)
+      setError(
+        msg.startsWith('Request timed out') || msg.startsWith('Network')
+          ? msg
+          : `Network or request error: ${msg}. Try a smaller file (under 4 MB) or try again.`,
+      )
     } finally {
       setSubmitting(false)
     }
@@ -102,8 +139,8 @@ export default function SingleItemPage() {
               }}
             />
             <div style={{ fontSize: '0.85rem', color: '#666', marginTop: 4 }}>
-              Max 10 MB. We&apos;ll extract text and check applicability and
-              consequences.
+              Max 4 MB (PDF or Word). We&apos;ll extract text and check
+              applicability and consequences.
             </div>
           </label>
 

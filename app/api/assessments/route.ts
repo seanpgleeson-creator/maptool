@@ -3,12 +3,15 @@ import { getPrisma } from '@/lib/db'
 import { analyzePolicy } from '@/lib/analyzePolicy'
 import { extractPolicyText } from '@/lib/extractPolicyText'
 
+// Allow up to 60s so PDF extraction + OpenAI can finish (Vercel Hobby max is 60s)
+export const maxDuration = 60
+
 const ALLOWED_TYPES = [
   'application/pdf',
   'application/msword', // .doc
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
 ] as const
-const MAX_FILE_BYTES = 10 * 1024 * 1024 // 10 MB
+const MAX_FILE_BYTES = 4 * 1024 * 1024 // 4 MB (under Vercel 4.5 MB request body limit)
 
 export async function POST(req: Request) {
   let formData: FormData
@@ -61,7 +64,10 @@ export async function POST(req: Request) {
   }
   if (policyFile.size > MAX_FILE_BYTES) {
     return Response.json(
-      { error: 'Policy file is too large. Maximum size is 10 MB.' },
+      {
+        error:
+          'Policy file is too large. Maximum size is 4 MB (to stay within upload limits).',
+      },
       { status: 400 },
     )
   }
