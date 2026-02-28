@@ -58,7 +58,9 @@ export default function SingleItemPage() {
         return
       }
       if (!res.ok) {
-        setError(data?.error ?? `Request failed (${res.status}).`)
+        const details = (data as { details?: string })?.details
+        const msg = data?.error ?? `Request failed (${res.status}).`
+        setError(details ? `${msg} ${details}` : msg)
         return
       }
       if (data.assessment_id) {

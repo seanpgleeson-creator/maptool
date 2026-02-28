@@ -214,6 +214,7 @@ export async function POST(req: Request) {
   } catch (err) {
     const message =
       err instanceof Error ? err.message : 'Unexpected server error.'
+    console.error('[POST /api/assessments]', err)
     return Response.json(
       {
         error:

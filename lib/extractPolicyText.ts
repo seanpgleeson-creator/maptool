@@ -1,5 +1,5 @@
 import mammoth from 'mammoth'
-import { PDFParse } from 'pdf-parse'
+import { extractText, getDocumentProxy } from 'unpdf'
 
 export type ExtractResult = { text: string } | { error: string }
 
@@ -34,16 +34,13 @@ export async function extractPolicyText(
 }
 
 async function extractFromPdf(buffer: Buffer): Promise<ExtractResult> {
-  let parser: PDFParse | null = null
   try {
-    parser = new PDFParse({ data: new Uint8Array(buffer) })
-    const result = await parser.getText()
-    await parser.destroy()
-    const text = (result?.text ?? '').trim()
-    if (!text) return { error: 'No text could be extracted from the PDF.' }
-    return { text }
+    const pdf = await getDocumentProxy(new Uint8Array(buffer))
+    const { text } = await extractText(pdf, { mergePages: true })
+    const trimmed = (text ?? '').trim()
+    if (!trimmed) return { error: 'No text could be extracted from the PDF.' }
+    return { text: trimmed }
   } catch (e) {
-    if (parser) void parser.destroy().catch(() => {})
     const message = e instanceof Error ? e.message : String(e)
     return { error: `PDF extraction failed: ${message}` }
   }

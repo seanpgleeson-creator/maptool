@@ -24,3 +24,5 @@ Thumbs.db
 npm-debug.log*
 .idea/
 .vscode/
+/app/generated/prisma
+
