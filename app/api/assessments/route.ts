@@ -1,10 +1,12 @@
 import { put } from '@vercel/blob'
 import { getPrisma } from '@/lib/db'
 import { analyzePolicy } from '@/lib/analyzePolicy'
-import { extractPolicyText } from '@/lib/extractPolicyText'
 
 // Allow up to 60s so PDF extraction + OpenAI can finish (Vercel Hobby max is 60s)
 export const maxDuration = 60
+
+// Force dynamic so Vercel doesn't treat this as static (can cause 405 in production)
+export const dynamic = 'force-dynamic'
 
 export function GET() {
   return Response.json(
@@ -126,7 +128,8 @@ export async function POST(req: Request) {
 
     const policyDocId = assessment.policyDoc!.id
 
-    // Extract text
+    // Extract text (dynamic import so route loads without unpdf/mammoth; avoids 405 on Vercel)
+    const { extractPolicyText } = await import('@/lib/extractPolicyText')
     const extractResult = await extractPolicyText(buffer, mime)
     const extractedText =
       'text' in extractResult ? extractResult.text : null
