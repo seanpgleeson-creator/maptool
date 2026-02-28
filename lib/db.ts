@@ -1,3 +1,4 @@
+import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '@prisma/client'
 
 class MissingDatabaseUrlError extends Error {
@@ -13,8 +14,10 @@ declare global {
 }
 
 function createPrismaClient() {
-  if (!process.env.DATABASE_URL) throw new MissingDatabaseUrlError()
-  return new PrismaClient()
+  const url = process.env.DATABASE_URL
+  if (!url || url.trim() === '') throw new MissingDatabaseUrlError()
+  const adapter = new PrismaPg({ connectionString: url })
+  return new PrismaClient({ adapter })
 }
 
 export function getPrisma() {
