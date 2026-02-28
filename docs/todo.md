@@ -45,15 +45,15 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md).
 
 ## 4. Competitor prices (scraping)
 
-- [ ] Implement scraper for Amazon (by UPC): fetch advertised price; handle timeouts and failures; optional cache keyed by UPC + source with TTL (e.g. Redis or KV).
-- [ ] Implement scraper for Walmart (by UPC): same approach.
-- [ ] Wire assessment job: after policy extraction, for each item fetch or use cached Amazon/Walmart price; store CompetitorPrice rows; compute per-item "MAP vs market" and competitiveness flag.
-- [ ] API: ensure GET /api/assessments/[id] returns competitor prices and competitiveness; support partial results (e.g. one source unavailable → "Unavailable" in UI).
-- [ ] Frontend: display competitive prices (MAP, Amazon, Walmart) and "Worth discussing" / "OK to proceed" per item; show "Unavailable" when a source failed; keep chat-like layout.
+- [ ] Implement scraper for Amazon (by UPC): fetch advertised price; handle timeouts and failures; optional cache keyed by UPC + source with TTL (e.g. Redis or KV). *Deferred: UI shows “Amazon — Coming soon.”*
+- [x] Implement lookup for Walmart (by UPC): `lib/walmart.ts` fetches Walmart search by UPC, returns listing URL (always) and price when parseable; store CompetitorPrice with listingUrl and errorMessage on failure.
+- [x] Wire assessment flow: after creating assessment and item, run Walmart lookup; create CompetitorPrice for walmart and amazon (amazon placeholder “Coming soon”); then continue with policy extraction and AI.
+- [x] API: GET /api/assessments/[id] returns competitor prices (price, listing_url, error); partial results supported.
+- [x] Frontend: display competitive prices (MAP, Walmart with price and “View product →” link; Amazon “Coming soon”); show “Unavailable” when a source failed; keep chat-like layout.
 
 **[PARALLEL]** Backend: scrapers + job integration + cache **|** Frontend: competitive prices and per-item messaging in result view. Contract: CompetitorPrice shape and partial nulls.
 
-- [ ] Deploy and test in production: run assessment with real UPC(s); verify prices (or graceful "Unavailable") and recommendation reflects competitiveness.
+- [ ] Deploy and test in production: run assessment with real UPC(s); verify Walmart price/link (or graceful “Unavailable”) and recommendation reflects competitiveness.
 
 ---
 
@@ -86,6 +86,7 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md).
 ## 7. Polish and production hardening
 
 - [ ] Progress messages: backend exposes current step (e.g. "fetching_prices", "analyzing_policy") or frontend infers from status; show "Checking Amazon…", "Checking Walmart…", "Reviewing policy…".
+- [x] **Info interstitial:** Info button (ℹ️) on Single item and Assessment results page opens a modal (“What we look for in the policy”) explaining applicability, consequences, competitive prices, and next-step recommendation in merchant language.
 - [ ] Error and edge cases: friendly messages (e.g. "We couldn't find this item on Amazon. Check the UPC or try again later."); partial results when policy extraction or AI fails; empty state for first-time user (ui.md).
 - [ ] Security and ops: validate all file types and sizes; rate limiting on POST and GET; secrets in env (Vercel env vars); no executable uploads.
 - [ ] Accessibility and responsive: keyboard-accessible uploads; headings in result sections; responsive layout (laptop and tablet).

@@ -59,13 +59,17 @@ Requirement: *“The output should be similar to LLM chatbots”* and *“elegan
 
 - **Format:** Conversational, message-style blocks (not one big form or only tables). Each “message” or card = one idea or section.
 - **Sections to show:**
-  1. **Competitive prices** — For each item (or summary for bulk): MAP value, Amazon price, Walmart price, and whether MAP as a floor would hurt competitiveness → “Worth discussing with vendor” or “OK to proceed from a price perspective.”
+  1. **Competitive prices** — For each item (or summary for bulk): MAP value; **Walmart** price (or “Unavailable”) plus a **“View product →”** link to the comparable product’s page (Walmart search by UPC); **Amazon** shows “Coming soon.” When a source fails, show “Unavailable” and still show the link when available. Whether MAP as a floor would hurt competitiveness → “Worth discussing with vendor” or “OK to proceed from a price perspective.”
   2. **Policy applicability** — Plain-language summary: e.g. “Applies to all retailers” vs “Applies only to [e.g. big box retailers]” with a clear callout if limited.
   3. **Policy consequences** — Whether the policy states **specific** steps (e.g. 1st warning, 2nd 90-day cutoff, 3rd suspension). If vague, call out: “Consequences are not specific; consider asking the vendor for clear steps.”
   4. **Enforcement** — Short statement: e.g. “Competitors are at or above MAP, so the vendor may be enforcing” vs “Competitors are below MAP; enforcement may be loose.”
   5. **Next steps** — One clear line: **“Discuss with vendor”** or **“Proceed.”** Optional 1–2 bullet reasons (e.g. “MAP above market” or “Policy only applies to a segment”).
 
 **Bulk runs:** Keep the chat-like narrative for the *overall* conclusion and policy/enforcement; add a compact **table** (e.g. UPC, MAP, Amazon, Walmart, “Discuss?”) for per-item results, with a summary line at the top.
+
+### 4.1 Info button and “What we look for”
+
+An **info button (ℹ️)** appears next to the “Single item” heading and next to the “Assessment” heading on the results page. When the user clicks it, an **interstitial (modal)** opens titled “What we look for in the policy.” It explains in plain language that the assessment looks at: (1) **Applicability** — whether the policy applies to all retailers or only a segment; (2) **Consequences** — whether the policy spells out specific steps for violations; (3) **Competitive prices** — how MAP compares to Walmart (and Amazon when available); (4) **Next step** — why we recommend “Discuss with vendor” or “Proceed.” The modal can be closed via a × button or by clicking outside. This keeps the UI simple while giving users a clear reference for what the AI is evaluating.
 
 ---
 

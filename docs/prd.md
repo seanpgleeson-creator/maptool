@@ -128,7 +128,7 @@ Without this, merchants cannot confidently decide whether to push back or accept
 | F23 | Single-item: form with UPC, MAP price, policy file upload (drag-and-drop + file picker); one primary CTA (e.g. “Run assessment”). | P0 |
 | F24 | Bulk: upload items file then policy file; optional column mapping/preview; one primary CTA to run assessment. | P0 |
 | F25 | **Progress:** Step-by-step messages (e.g. “Checking Amazon…”, “Checking Walmart…”, “Reviewing policy…”) rather than a single spinner. | P0 |
-| F26 | **Results:** Chat-like, message-style blocks. Sections: (1) Competitive prices, (2) Policy applicability, (3) Policy consequences, (4) Enforcement, (5) Next steps (Discuss / Proceed + reasons). | P0 |
+| F26 | **Results:** Chat-like, message-style blocks. Sections: (1) Competitive prices (Walmart: price + “View product” link to product page; Amazon: “Coming soon”), (2) Policy applicability, (3) Policy consequences, (4) Enforcement, (5) Next steps (Discuss / Proceed + reasons). An **info button (ℹ️)** opens an interstitial explaining what the assessment looks for (applicability, consequences, competitive prices, next step). | P0 |
 | F27 | For bulk: same narrative plus a compact table (e.g. UPC, MAP, Amazon, Walmart, “Discuss?”) for per-item results; summary and recommendation at top. | P0 |
 | F28 | Copy in merchant language (“MAP price,” “vendor policy,” “competitor prices,” “next steps”); avoid “scraping,” “AI,” “model.” | P0 |
 | F29 | Errors: friendly, actionable (e.g. “We couldn’t find this item on Amazon. Check the UPC or try again later.”). | P1 |

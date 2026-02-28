@@ -4,7 +4,9 @@ This app will allow a merchant to enter an item's UPC, MAP price, and the vendor
 
 Once the MAP price, UPC and policy are uploaded, the app will assess the whether the MAP value should be discussed with the vendor.  It should be discussed if the MAP value, if treated as a floor price, will prohibit the retailer from being able to price competitively.  This should be done through scraping competitive websites for the item and determining if the MAP value is higher than the market price. I'd like to focus on Amazon and Walmart as competitors for this MVP.  
 
-The app should also review the policy (using AI) and determine if the policy is:
+The app shows competitive prices with a link to the comparable product’s detail page (Walmart.com is live; Amazon is coming soon). An info button (ℹ️) lets users open a short explanation of what the AI looks for when assessing the policy.
+
+The app also reviews the policy (using AI) and determines if the policy is:
 
 - applicable to all retailers, not just a specific segment  or channel.  For example, if the policy is only applicable to "big box retailers", this should be called out.
 - Has specific consequences and steps that will be taken if the policy is violated.  It can not be general - it must have specific action steps when a MAP policy is broken.  Example: first violation is a warning, second violation is a cut off of supply for 90 days, third violation is suspension of the relationship.

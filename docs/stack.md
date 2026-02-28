@@ -10,7 +10,7 @@ This project is designed to ship quickly on **GitHub + Vercel**, and be testable
 ## Backend (API)
 
 - **Next.js Route Handlers** (`app/api/**/route.ts`) for the MVP API.
-- Async/background work (scraping + AI) will be added in later phases (see `docs/todo.md`). MVP scaffolding should keep the API response shape stable (assessment id + status, then results).
+- Assessment API runs policy extraction, competitor price lookup (Walmart), and policy AI in sequence; see `docs/todo.md` for phased work (e.g. bulk, cache).
 
 ## Database
 
@@ -26,7 +26,10 @@ This project is designed to ship quickly on **GitHub + Vercel**, and be testable
 
 - Policy review uses an LLM API (placeholder env: `OPENAI_API_KEY`).
 
-## Notes
+## Competitor prices (current)
 
-- Scraping Amazon/Walmart is inherently fragile and may fail or be blocked; the product must handle partial results gracefully (see `docs/prd.md` and `docs/ui.md`).
+- **Walmart:** Implemented in `lib/walmart.ts`. For each UPC we fetch Walmart search results, parse price when possible, and always store a **listing URL** (Walmart search for that UPC). Results are stored in `CompetitorPrice` (price, listingUrl, errorMessage). The UI shows price (or “Unavailable”) and a “View product →” link.
+- **Amazon:** Placeholder “Coming soon”; no fetch yet. The UI shows “Amazon — Coming soon.”
+- Scraping/lookup runs inside the assessment API (same request); partial failure is handled (e.g. price null + link still shown).
+- Walmart fetch can be blocked or fail; the product handles partial results (listing URL still shown when price is unavailable). See `docs/backend.md` and `docs/ui.md`.
 

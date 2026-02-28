@@ -123,10 +123,39 @@ export async function POST(req: Request) {
           },
         },
       },
-      include: { policyDoc: true },
+      include: { policyDoc: true, items: true },
     })
 
     const policyDocId = assessment.policyDoc!.id
+    const firstItem = assessment.items[0]
+    if (!firstItem) throw new Error('Assessment has no items.')
+
+    // Competitor prices: Walmart (lookup) + Amazon (coming soon)
+    await prisma.assessment.update({
+      where: { id: assessment.id },
+      data: { step: 'checking_prices' },
+    })
+    const { getWalmartByUpc } = await import('@/lib/walmart')
+    const walmartResult = await getWalmartByUpc(upc)
+    await prisma.competitorPrice.createMany({
+      data: [
+        {
+          assessmentItemId: firstItem.id,
+          source: 'walmart',
+          price: walmartResult.price,
+          listingUrl: walmartResult.listingUrl,
+          errorMessage: walmartResult.error ?? null,
+          scrapedAt: new Date(),
+        },
+        {
+          assessmentItemId: firstItem.id,
+          source: 'amazon',
+          price: null,
+          listingUrl: null,
+          errorMessage: 'Coming soon',
+        },
+      ],
+    })
 
     // Extract text (dynamic import so route loads without unpdf/mammoth; avoids 405 on Vercel)
     const { extractPolicyText } = await import('@/lib/extractPolicyText')

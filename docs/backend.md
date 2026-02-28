@@ -84,8 +84,14 @@ The backend must:
 - **Async:** Run scraping in a background job per assessment so the API can return quickly (e.g. assessment_id + status).
 - **Per UPC:** One or two requests per UPC (Amazon, Walmart). For bulk, fan-out per item; consider rate limiting (e.g. delay between requests, max concurrency) to avoid blocks.
 - **Caching:** Cache by (upc, source) with TTL (e.g. 24–48 h). On cache hit, skip scrape and use cached price and scraped_at.
-- **Output:** Store in CompetitorPrice. If a source fails, record no row or a row with null price and error reason; UI shows "Unavailable" and continues with other data.
+- **Output:** Store in CompetitorPrice (price, listingUrl, errorMessage, scrapedAt). If a source fails, record no row or a row with null price and error reason; UI shows "Unavailable" and continues with other data. When listingUrl is present, the UI shows a “View product” link.
 - **Identification:** Amazon/Walmart often use UPC in product pages or search. Implement search-by-UPC or product URL pattern; document and maintain selectors.
+
+### 4.4 Current implementation
+
+- **Walmart:** `lib/walmart.ts` — `getWalmartByUpc(upc)` fetches `https://www.walmart.com/search?q=<upc>`, attempts to parse current price from the response, and always returns a **listing URL** (the search URL). Result is stored in CompetitorPrice (source: walmart). Price may be null if the request is blocked, times out, or the page structure changes; the listing URL is still stored so the user can open Walmart search for that UPC.
+- **Amazon:** Placeholder only: a CompetitorPrice row with source amazon, null price, and errorMessage `"Coming soon"`. No fetch implemented yet.
+- Both competitor rows are created during the single-item assessment flow (step `checking_prices`) before policy extraction and AI analysis.
 
 ---
 

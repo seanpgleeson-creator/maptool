@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
+import { PolicyInfoModal } from '../components/PolicyInfoModal'
 
 export default function SingleItemPage() {
   const router = useRouter()
@@ -88,7 +89,10 @@ export default function SingleItemPage() {
   return (
     <main style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>
       <div style={{ maxWidth: '40rem' }}>
-        <h1 style={{ marginBottom: '0.25rem' }}>Single item</h1>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.25rem' }}>
+          <h1 style={{ margin: 0 }}>Single item</h1>
+          <PolicyInfoModal />
+        </div>
         <p style={{ marginTop: 0, color: '#666' }}>
           Enter a UPC, MAP price, and upload the vendor&apos;s MAP policy (PDF or
           Word). We&apos;ll review the policy and recommend next steps.

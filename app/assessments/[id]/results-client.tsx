@@ -15,6 +15,8 @@ type AssessmentResponse = {
       source: string
       price: string | null
       currency: string
+      listing_url?: string | null
+      error?: string | null
     }>
   }>
   policy_analysis?: null | {
@@ -93,6 +95,19 @@ export function ResultsClient({ id }: { id: string }) {
 
   const item = data?.items?.[0]
 
+  // When analysis failed (e.g. OpenAI 429), show the error from recommendation reasons
+  const analysisErrorReason =
+    !data?.policy_analysis &&
+    Array.isArray(data?.recommendation?.reasons) &&
+    (data.recommendation.reasons as string[]).find(
+      (r) =>
+        typeof r === 'string' &&
+        (r.includes('Policy analysis failed') ||
+          r.includes('429') ||
+          r.toLowerCase().includes('quota') ||
+          r.toLowerCase().includes('openai'))
+    )
+
   return (
     <div style={{ display: 'grid', gap: '0.75rem' }}>
       <Card title="Status">
@@ -116,9 +131,59 @@ export function ResultsClient({ id }: { id: string }) {
             <div>
               <strong>MAP:</strong> {item.map_price}
             </div>
-            <div style={{ color: '#666', marginTop: 6 }}>
-              Amazon and Walmart price checks will appear here in a future
-              update.
+            <div style={{ marginTop: 12 }}>
+              {item.competitor_prices.length === 0 ? (
+                <div style={{ color: '#666' }}>
+                  No competitor price data for this assessment.
+                </div>
+              ) : (
+                item.competitor_prices.map((cp) => (
+                  <div
+                    key={cp.source}
+                    style={{
+                      marginBottom: 10,
+                      padding: '8px 0',
+                      borderBottom:
+                        item.competitor_prices.indexOf(cp) <
+                        item.competitor_prices.length - 1
+                          ? '1px solid #eee'
+                          : undefined,
+                    }}
+                  >
+                    <span style={{ fontWeight: 600, textTransform: 'capitalize' }}>
+                      {cp.source}
+                    </span>
+                    {cp.source === 'amazon' &&
+                    (cp.error === 'Coming soon' || !cp.price) ? (
+                      <span style={{ color: '#666', marginLeft: 8 }}>
+                        Coming soon
+                      </span>
+                    ) : (
+                      <>
+                        <span style={{ marginLeft: 8 }}>
+                          {cp.price != null
+                            ? `$${Number(cp.price).toFixed(2)}`
+                            : cp.error ?? 'Unavailable'}
+                        </span>
+                        {cp.listing_url ? (
+                          <a
+                            href={cp.listing_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              marginLeft: 10,
+                              fontSize: '0.9rem',
+                              color: '#0066cc',
+                            }}
+                          >
+                            View product →
+                          </a>
+                        ) : null}
+                      </>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         ) : (
@@ -145,6 +210,25 @@ export function ResultsClient({ id }: { id: string }) {
                 ) : null}
               </div>
             )}
+          </div>
+        ) : analysisErrorReason ? (
+          <div style={{ color: '#b00020' }}>
+            <p style={{ margin: 0 }}>Policy analysis could not be completed.</p>
+            <p style={{ margin: '0.5rem 0 0 0' }}>{analysisErrorReason}</p>
+            {analysisErrorReason.includes('429') ||
+            analysisErrorReason.toLowerCase().includes('quota') ? (
+              <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.9rem', color: '#666' }}>
+                Check your OpenAI plan and billing at{' '}
+                <a
+                  href="https://platform.openai.com/account/billing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  platform.openai.com
+                </a>
+                .
+              </p>
+            ) : null}
           </div>
         ) : (
           <div style={{ color: '#666' }}>
@@ -174,6 +258,10 @@ export function ResultsClient({ id }: { id: string }) {
                 cutoff; third: termination).
               </p>
             )}
+          </div>
+        ) : analysisErrorReason ? (
+          <div style={{ color: '#b00020' }}>
+            {analysisErrorReason}
           </div>
         ) : (
           <div style={{ color: '#666' }}>No policy analysis available.</div>
