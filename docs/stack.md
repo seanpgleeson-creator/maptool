@@ -28,8 +28,7 @@ This project is designed to ship quickly on **GitHub + Vercel**, and be testable
 
 ## Competitor prices (current)
 
-- **Walmart:** Implemented in `lib/walmart.ts`. For each UPC we fetch Walmart search results, parse price when possible, and always store a **listing URL** (Walmart search for that UPC). Results are stored in `CompetitorPrice` (price, listingUrl, errorMessage). The UI shows price (or “Unavailable”) and a “View product →” link.
+- **Walmart:** Implemented in `lib/walmart.ts`. When **ScrapingDog** (`SCRAPINGDOG_API_KEY`) is set, the app uses **UPCitemdb** (Option D hybrid): ScrapingDog fetches the UPCitemdb product page; we parse the Shopping Info table for Walmart price and link. No Walmart search; works when UPCitemdb has a Walmart listing for the UPC. Otherwise direct scrape of Walmart search (fragile). See [docs/walmart-price-sources.md](walmart-price-sources.md). Results are stored in `CompetitorPrice` (price, listingUrl, errorMessage). The UI shows price (or “Unavailable”) and a “View product →” link.
 - **Amazon:** Placeholder “Coming soon”; no fetch yet. The UI shows “Amazon — Coming soon.”
-- Scraping/lookup runs inside the assessment API (same request); partial failure is handled (e.g. price null + link still shown).
-- Walmart fetch can be blocked or fail; the product handles partial results (listing URL still shown when price is unavailable). See `docs/backend.md` and `docs/ui.md`.
+- Lookup runs inside the assessment API (same request); partial failure is handled (e.g. price null + link still shown).
 

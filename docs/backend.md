@@ -89,7 +89,9 @@ The backend must:
 
 ### 4.4 Current implementation
 
-- **Walmart:** `lib/walmart.ts` — `getWalmartByUpc(upc)` fetches `https://www.walmart.com/search?q=<upc>`, attempts to parse current price from the response, and always returns a **listing URL** (the search URL). Result is stored in CompetitorPrice (source: walmart). Price may be null if the request is blocked, times out, or the page structure changes; the listing URL is still stored so the user can open Walmart search for that UPC.
+- **Walmart:** `lib/walmart.ts` — `getWalmartByUpc(upc)` uses:
+  - **`SCRAPINGDOG_API_KEY` set:** `lib/upcitemdb.ts` — ScrapingDog fetches `https://www.upcitemdb.com/upc/<upc>`; we parse the Shopping Info table for the Walmart row (price and buy link). Option D hybrid: no Walmart search, price/link from UPCitemdb. See [docs/walmart-price-sources.md](walmart-price-sources.md).
+  - **Not set:** Direct fetch of `https://www.walmart.com/search?q=<upc>`; parse price from HTML; listing URL is the search URL. Fragile (blocks, unreliable search-by-UPC).
 - **Amazon:** Placeholder only: a CompetitorPrice row with source amazon, null price, and errorMessage `"Coming soon"`. No fetch implemented yet.
 - Both competitor rows are created during the single-item assessment flow (step `checking_prices`) before policy extraction and AI analysis.
 
