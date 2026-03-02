@@ -1,6 +1,6 @@
 /**
  * Look up Walmart price and product page URL by UPC.
- * Returns the search URL as listingUrl always; price may be null if fetch/parse fails.
+ * Priority: (1) RIVIN_API_KEY → Rivin.ai product details, (2) SCRAPINGBEE_API_KEY → ScrapingBee search, (3) direct scrape of Walmart search.
  */
 
 export type WalmartResult = {
@@ -12,6 +12,23 @@ export type WalmartResult = {
 const WALMART_SEARCH_BASE = 'https://www.walmart.com/search'
 
 export async function getWalmartByUpc(upc: string): Promise<WalmartResult> {
+  const rivinKey = process.env.RIVIN_API_KEY?.trim()
+  if (rivinKey) {
+    const { getWalmartByUpcFromRivin } = await import('@/lib/rivin')
+    return getWalmartByUpcFromRivin(upc, rivinKey)
+  }
+
+  const scrapingBeeKey = process.env.SCRAPINGBEE_API_KEY?.trim()
+  if (scrapingBeeKey) {
+    const { getWalmartByUpcFromScrapingBee } = await import('@/lib/scrapingbee')
+    return getWalmartByUpcFromScrapingBee(upc, scrapingBeeKey)
+  }
+
+  // No API key available at runtime — log so you can verify in Vercel → Logs
+  console.warn(
+    '[Walmart] SCRAPINGBEE_API_KEY not set in this environment; using direct scrape. Set it in Vercel → Project → Settings → Environment Variables for Production (and Preview if testing preview URLs), then redeploy.',
+  )
+
   const listingUrl = `${WALMART_SEARCH_BASE}?q=${encodeURIComponent(upc)}`
 
   try {
@@ -57,7 +74,8 @@ export async function getWalmartByUpc(upc: string): Promise<WalmartResult> {
     return {
       price: null,
       listingUrl,
-      error: 'Price not found on page. Link to search below.',
+      error:
+        'Price not found on page. Link to search below. For reliable prices, set SCRAPINGBEE_API_KEY in Vercel → Settings → Environment Variables (Production) and redeploy.',
     }
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e)
