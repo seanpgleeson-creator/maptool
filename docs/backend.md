@@ -65,7 +65,7 @@ The backend must:
 
 ### 4.1 Scope
 
-- **Sources:** Amazon and Walmart only for MVP.
+- **Sources:** Amazon and Walmart only for MVP. **Walmart is the primary data source** for current market retail in MVP.
 - **Per item:** Look up by UPC (or product identifier); retrieve current advertised/display price(s).
 
 ### 4.2 Implementation options
@@ -105,6 +105,8 @@ The backend must:
 - **Outputs:**
   1. **Applicability:** Boolean or enum: applies to all retailers vs limited to a segment/channel. If limited, short description (e.g. "big box retailers only").
   2. **Consequences:** Boolean: are there specific action steps for violations? Optional: extracted summary (e.g. "1st warning, 2nd 90-day cutoff, 3rd suspension").
+  3. *(User research / future or phased)* **Severity rating** (high/medium/low) for consequences based on how consequential violations are for retailers; **timeline** for when consequences take effect. Policies vary: some lack consequence details, others are very specific.
+  4. *(User research)* Support helping users understand **vendor response speed and supply cut-off risks** (data/features can be placeholder in MVP).
 
 ### 5.2 Implementation
 
@@ -131,6 +133,7 @@ The backend must:
 - **Logic (deterministic):** Rule-based, e.g.:
   - **Discuss with vendor** if any of: MAP > market for one or more items (floor would hurt competitiveness); policy applies only to a segment; consequences not specific; optional: enforcement weak (competitors below MAP) so policy may be negotiable.
   - **Proceed** if: MAP ≤ market (or acceptable), policy applies to all, consequences specific, and optionally enforcement present.
+- *(User research)* **Flag when MAP > market** (e.g. MAP higher than Walmart retail): include as a reason for “negotiation follow-up needed” and “MAP policy would make pricing uncompetitive”; derived field or reason in recommendation logic.
 - **Output:** action (discuss | proceed), list of reasons (short strings), and per-item summary for bulk. Stored in Recommendation and returned in the chat-like response.
 
 ---
@@ -162,6 +165,12 @@ The backend must:
 - **Secrets:** LLM API keys, any proxy credentials — in env or secret manager, not in code.
 - **Scraping:** Use timeouts and retries; consider proxy rotation if needed; respect robots.txt and legal constraints.
 - **Rate limiting:** Apply to submission and to GET to avoid abuse.
+
+### 9.1 User expectations and future work
+
+- **Data accuracy:** Support the **MVP disclaimer** and set expectations for current data limitations (e.g. “Not all data may be 100% accurate — this experience is for example purposes”). Future work will improve competitive price data accuracy.
+- **Vendor history (future):** Placeholder for **historical MAP violation enforcement** — e.g. track which vendors actually cut off supply vs just threaten; identify vendors worth following MAP policies for. No implementation in MVP.
+- **Bulk phase (future):** When bulk is released, **Excel report generation** (summary cover page, per-item analysis with competitive data, MAP vs market detail) is a planned enhancement from user research.
 
 ---
 

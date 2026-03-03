@@ -94,12 +94,16 @@ Without this, merchants cannot confidently decide whether to push back or accept
 | F9 | Cache competitor prices by UPC and source with TTL (e.g. 24–48 h) to reduce repeated scraping. | P1 |
 | F10 | If a source fails for an item: store partial result (e.g. one source only); surface “Unavailable” in UI and still produce recommendation. | P0 |
 
+*User research:* **Walmart** is the primary data source for current market retail in MVP. *Future phase (bulk):* competitive landscape view for individual items in bulk uploads.
+
 ### 4.3 Policy analysis (AI)
 
 | ID | Requirement | Priority |
 |----|-------------|----------|
 | F11 | Analyze policy text to determine **applicability**: all retailers vs limited to a segment/channel; if limited, return short description (e.g. “big box retailers only”). | P0 |
 | F12 | Analyze policy text to determine **consequence specificity**: whether the policy states specific action steps for violations (e.g. 1st warning, 2nd 90-day cutoff, 3rd suspension); if yes, return a short summary. | P0 |
+| F12a | *(User research)* When consequences are present: **severity rating** (high/medium/low) based on how consequential violations are for retailers, and **timeline** for when consequences take effect. Some policies lack consequence details; others are very specific. | P1 |
+| F12b | *(User research)* Help users understand **vendor response speed and supply cut-off risks** where the policy supports it. | P2 |
 | F13 | Use structured output (e.g. JSON) from the LLM for reliable parsing. One AI call per assessment (one policy per run). | P0 |
 
 ### 4.4 Enforcement and recommendation
@@ -108,6 +112,7 @@ Without this, merchants cannot confidently decide whether to push back or accept
 |----|-------------|----------|
 | F14 | Compute **enforcement signal**: “Vendor may be enforcing” when competitors (Amazon/Walmart) are at or above MAP for the item(s). | P0 |
 | F15 | Compute **competitiveness**: for each item, determine if MAP as a floor would hurt (MAP higher than market price). | P0 |
+| F15a | *(User research)* **Flag when MAP vs current market retail creates issues**: MAP higher than Walmart retail = negotiation follow-up needed; indicates MAP policy would make pricing uncompetitive. Surface in recommendation and results. | P0 |
 | F16 | Produce **recommendation**: **Discuss with vendor** or **Proceed**, with a short list of reasons (e.g. “MAP above market,” “Policy only applies to a segment,” “Consequences not specific”). | P0 |
 | F17 | Recommendation logic: Discuss if any of: MAP > market, policy limited to segment, consequences not specific, or (optionally) weak enforcement; otherwise Proceed. | P0 |
 
@@ -129,6 +134,7 @@ Without this, merchants cannot confidently decide whether to push back or accept
 | F24 | Bulk: upload items file then policy file; optional column mapping/preview; one primary CTA to run assessment. | P0 |
 | F25 | **Progress:** Step-by-step messages (e.g. “Checking Amazon…”, “Checking Walmart…”, “Reviewing policy…”) rather than a single spinner. | P0 |
 | F26 | **Results:** Chat-like, message-style blocks. Sections: (1) Competitive prices (Walmart: price + “View product” link to product page; Amazon: “Coming soon”), (2) Policy applicability, (3) Policy consequences, (4) Enforcement, (5) Next steps (Discuss / Proceed + reasons). An **info button (ℹ️)** opens an interstitial explaining what the assessment looks for (applicability, consequences, competitive prices, next step). | P0 |
+| F26a | *(User research)* **MVP disclaimer** at the top of the page: “Not all data may be 100% accurate — this experience is for example purposes.” Set expectations for current data limitations; a future feature will focus on competitive price data accuracy. | P0 |
 | F27 | For bulk: same narrative plus a compact table (e.g. UPC, MAP, Amazon, Walmart, “Discuss?”) for per-item results; summary and recommendation at top. | P0 |
 | F28 | Copy in merchant language (“MAP price,” “vendor policy,” “competitor prices,” “next steps”); avoid “scraping,” “AI,” “model.” | P0 |
 | F29 | Errors: friendly, actionable (e.g. “We couldn’t find this item on Amazon. Check the UPC or try again later.”). | P1 |
@@ -157,6 +163,11 @@ Without this, merchants cannot confidently decide whether to push back or accept
 - Editing or versioning of policies; only one policy per assessment run.  
 - In-app vendor communication or contract storage.  
 - Dashboard/KPIs; focus is run assessment → read result → next steps.
+
+### 6.1 Future phases (user research backlog)
+
+- **Vendor history:** Placeholder section for historical MAP violation enforcement — track which vendors actually cut off supply vs just threaten; help identify vendors worth following MAP policies for. Post-MVP.
+- **Bulk phase:** When bulk uploads is released: **Excel report generation** for bulk uploads (summary cover page with assessment overview, individual item analysis with competitive data, detailed review of MAP vs market pricing). Post-MVP.
 
 ---
 
@@ -195,6 +206,6 @@ Storage: relational DB (e.g. Postgres or SQLite for MVP); object storage for pol
 
 ## 10. References
 
-- **description.md** — Original product vision and feature set.  
-- **ui.md** — UI findings: flows, output structure, navigation, edge cases, accessibility.  
+- **description.md** — Original product vision and feature set; **User research update (March 2026)** for enhancement themes.  
+- **ui.md** — UI findings: flows, output structure, navigation, edge cases, accessibility.
 - **backend.md** — Backend findings: data model, ingestion, scraping, AI, API, security, technology options.

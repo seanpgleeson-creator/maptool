@@ -59,15 +59,19 @@ Requirement: *“The output should be similar to LLM chatbots”* and *“elegan
 
 - **Format:** Conversational, message-style blocks (not one big form or only tables). Each “message” or card = one idea or section.
 - **Sections to show:**
-  1. **Competitive prices** — For each item (or summary for bulk): MAP value; **Walmart** price (or “Unavailable”) plus a **“View product →”** link to the comparable product’s page (Walmart search by UPC); **Amazon** shows “Coming soon.” When a source fails, show “Unavailable” and still show the link when available. Whether MAP as a floor would hurt competitiveness → “Worth discussing with vendor” or “OK to proceed from a price perspective.”
+  1. **Competitive prices** — For each item (or summary for bulk): MAP value; **Walmart** price (or “Unavailable”) plus a **“View product →”** link (Walmart is primary data source for current market retail); **Amazon** shows “Coming soon.” When a source fails, show “Unavailable” and still show the link when available. Whether MAP as a floor would hurt competitiveness → “Worth discussing with vendor” or “OK to proceed from a price perspective.” *(User research)* **Flag when MAP vs current market retail creates issues**: when MAP is higher than Walmart retail, show that **negotiation follow-up is needed** and that the MAP policy would make pricing uncompetitive. *Future phase (bulk):* competitive landscape view for individual items in bulk uploads.
   2. **Policy applicability** — Plain-language summary: e.g. “Applies to all retailers” vs “Applies only to [e.g. big box retailers]” with a clear callout if limited.
-  3. **Policy consequences** — Whether the policy states **specific** steps (e.g. 1st warning, 2nd 90-day cutoff, 3rd suspension). If vague, call out: “Consequences are not specific; consider asking the vendor for clear steps.”
+  3. **Policy consequences** — Whether the policy states **specific** steps (e.g. 1st warning, 2nd 90-day cutoff, 3rd suspension). If vague, call out: “Consequences are not specific; consider asking the vendor for clear steps.” *(User research)* When available: show **severity rating** (high/medium/low) and **timeline** for when consequences take effect; help users understand **vendor response speed and supply cut-off risks**. Some policies lack consequence details; others are very specific.
   4. **Enforcement** — Short statement: e.g. “Competitors are at or above MAP, so the vendor may be enforcing” vs “Competitors are below MAP; enforcement may be loose.”
   5. **Next steps** — One clear line: **“Discuss with vendor”** or **“Proceed.”** Optional 1–2 bullet reasons (e.g. “MAP above market” or “Policy only applies to a segment”).
 
 **Bulk runs:** Keep the chat-like narrative for the *overall* conclusion and policy/enforcement; add a compact **table** (e.g. UPC, MAP, Amazon, Walmart, “Discuss?”) for per-item results, with a summary line at the top.
 
-### 4.1 Info button and “What we look for”
+### 4.1 MVP disclaimer and data expectations
+
+*(User research)* Show an **MVP disclaimer at the top of the page**, e.g. “Not all data may be 100% accurate — this experience is for example purposes.” Set proper expectations for current data limitations; a future feature will focus on competitive price data accuracy.
+
+### 4.2 Info button and “What we look for”
 
 An **info button (ℹ️)** appears next to the “Single item” heading and next to the “Assessment” heading on the results page. When the user clicks it, an **interstitial (modal)** opens titled “What we look for in the policy.” It explains in plain language that the assessment looks at: (1) **Applicability** — whether the policy applies to all retailers or only a segment; (2) **Consequences** — whether the policy spells out specific steps for violations; (3) **Competitive prices** — how MAP compares to Walmart (and Amazon when available); (4) **Next step** — why we recommend “Discuss with vendor” or “Proceed.” The modal can be closed via a × button or by clicking outside. This keeps the UI simple while giving users a clear reference for what the AI is evaluating.
 
@@ -80,6 +84,7 @@ Keep the MVP to a small set of screens:
 - **Home / New assessment** — Choice: “Single item” or “Bulk upload,” then the relevant input flow.
 - **Results** — Same “conversation” view for both single and bulk; bulk adds a table or expandable list.
 - **History (optional for MVP)** — List of past assessments (date, vendor/policy name, outcome) so merchants can revisit. If omitted for MVP, state it as a post-MVP feature.
+- *(User research)* **Vendor history (future):** Placeholder section or future screen for historical MAP violation enforcement — which vendors actually cut off supply vs just threaten; which are worth following MAP policies for. No detailed design in MVP; post-MVP.
 
 No need for a dashboard with KPIs; focus on “run assessment → read result → next steps.”
 
@@ -101,6 +106,8 @@ No need for a dashboard with KPIs; focus on “run assessment → read result �
 | Competitor unavailable | Show partial results; “Walmart: —” or “Unavailable”; still show recommendation with a note. |
 | Many items in bulk | Pagination or virtualized table; summary and recommendation always visible at top. |
 | First-time user | Short empty state: “Add an item or upload a file to see if this MAP is worth discussing with your vendor.” |
+
+*(User research, bulk phase / future):* When bulk upload is released, support **Excel report generation**: summary cover page with assessment overview, individual item analysis with competitive data, detailed MAP vs market pricing review.
 
 ---
 
