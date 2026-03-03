@@ -205,7 +205,6 @@ export async function POST(req: Request) {
               consequencesSummary: r.consequencesSummary,
               consequenceSeverity: r.consequenceSeverity,
               consequenceTimeline: r.consequenceTimeline,
-              vendorResponseSupplyRisks: r.vendorResponseSupplyRisks,
             },
           })
           if (!r.appliesToAllRetailers && r.segmentDescription) {

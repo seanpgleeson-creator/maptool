@@ -100,8 +100,9 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md), [capabil
 
 - [x] **Data accuracy:** MVP disclaimer at top of page (e.g. “Not all data may be 100% accurate — this experience is for example purposes”); set expectations for data limitations. (F26a; ui.md 4.1.)
 - [x] **Competitive pricing:** Flag when MAP > Walmart retail: show negotiation follow-up needed and that MAP would make pricing uncompetitive; Walmart as primary source. (F15a; ui.md Section 4.)
-- [x] **Policy assessment:** Severity rating (high/medium/low) and timeline for consequences; vendor response speed and supply cut-off risks in policy output and UI. (F12a, F12b; ui.md Section 4.)
-- [x] **Vendor history (later):** Placeholder section for historical MAP enforcement (which vendors cut off supply vs threaten; worth following MAP for). (Section 6.1; post-MVP.)
+- [x] **Policy assessment:** Severity rating (high/medium/low) and timeline for consequences; frame consequences positively (support strict when applied uniformly). (F12a, F12b; ui.md Section 4.)
+- [x] **Fulfillment & enforcement context (future):** Separate section (not from policy). Placeholder for Target fulfillment history with vendor; inventory issues related to MAP enforcement. (F12b; post-MVP.)
+- [x] **Vendor history (later):** Placeholder for historical MAP enforcement. (Section 6.1; post-MVP.)
 - [ ] **Bulk phase (later):** Competitive landscape per item; Excel report generation for bulk uploads. (Section 6.1, 4.2; when bulk is released.)
 
 ---

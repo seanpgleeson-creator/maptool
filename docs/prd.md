@@ -115,7 +115,7 @@ Existing requirements F26a, F15a, F12a, F12b and Section 6.1 implement these; th
 | F11 | Analyze policy text to determine **applicability**: all retailers vs limited to a segment/channel; if limited, return short description (e.g. “big box retailers only”). | P0 |
 | F12 | Analyze policy text to determine **consequence specificity**: whether the policy states specific action steps for violations (e.g. 1st warning, 2nd 90-day cutoff, 3rd suspension); if yes, return a short summary. | P0 |
 | F12a | *(User research)* When consequences are present: **severity rating** (high/medium/low) based on how consequential violations are for retailers, and **timeline** for when consequences take effect. Some policies lack consequence details; others are very specific. | P1 |
-| F12b | *(User research)* Help users understand **vendor response speed and supply cut-off risks** where the policy supports it. | P2 |
+| F12b | *(User research)* **Fulfillment & enforcement context (future):** A separate results section (not from policy text) that will consume **Target's fulfillment history with the vendor** to highlight known **inventory issues related to MAP enforcement**. Context for deciding whether to follow MAP. Placeholder in MVP. | P2 |
 | F13 | Use structured output (e.g. JSON) from the LLM for reliable parsing. One AI call per assessment (one policy per run). | P0 |
 
 ### 4.4 Enforcement and recommendation
@@ -145,7 +145,7 @@ Existing requirements F26a, F15a, F12a, F12b and Section 6.1 implement these; th
 | F23 | Single-item: form with UPC, MAP price, policy file upload (drag-and-drop + file picker); one primary CTA (e.g. “Run assessment”). | P0 |
 | F24 | Bulk: upload items file then policy file; optional column mapping/preview; one primary CTA to run assessment. | P0 |
 | F25 | **Progress:** Step-by-step messages (e.g. “Checking Amazon…”, “Checking Walmart…”, “Reviewing policy…”) rather than a single spinner. | P0 |
-| F26 | **Results:** Chat-like, message-style blocks. Sections: (1) Competitive prices (Walmart: price + “View product” link to product page; Amazon: “Coming soon”), (2) Policy applicability, (3) Policy consequences, (4) Enforcement, (5) Next steps (Discuss / Proceed + reasons). An **info button (ℹ️)** opens an interstitial explaining what the assessment looks for (applicability, consequences, competitive prices, next step). | P0 |
+| F26 | **Results:** Chat-like, message-style blocks. Sections: (1) Competitive prices (Walmart: price + “View product” link to product page; Amazon: “Coming soon”), (2) Policy applicability, (3) Policy consequences, (4) Enforcement, (5) Fulfillment & enforcement context (future: Target fulfillment history, inventory/MAP — placeholder), (6) Next steps (Discuss / Proceed + reasons; emphasize supporting strict consequences when uniform). An **info button (ℹ️)** opens an interstitial explaining what the assessment looks for (applicability, consequences, competitive prices, next step). | P0 |
 | F26a | *(User research)* **MVP disclaimer** at the top of the page: “Not all data may be 100% accurate — this experience is for example purposes.” Set expectations for current data limitations; a future feature will focus on competitive price data accuracy. | P0 |
 | F27 | For bulk: same narrative plus a compact table (e.g. UPC, MAP, Amazon, Walmart, “Discuss?”) for per-item results; summary and recommendation at top. | P0 |
 | F28 | Copy in merchant language (“MAP price,” “vendor policy,” “competitor prices,” “next steps”); avoid “scraping,” “AI,” “model.” | P0 |

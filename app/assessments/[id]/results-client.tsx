@@ -37,7 +37,6 @@ type AssessmentResponse = {
     consequences_summary: string | null
     consequence_severity?: string | null
     consequence_timeline?: string | null
-    vendor_response_supply_risks?: string | null
   }
   recommendation?: null | {
     action: string
@@ -278,6 +277,9 @@ export function ResultsClient({ id }: { id: string }) {
       <Card title="Policy consequences">
         {data?.policy_analysis ? (
           <div>
+            <p style={{ margin: 0, marginBottom: '0.5rem', color: '#333', fontSize: '0.95rem' }}>
+              We support strict consequences when the vendor applies them uniformly.
+            </p>
             {data.policy_analysis.consequences_specific ? (
               <div>
                 <p style={{ margin: 0, fontWeight: 600 }}>
@@ -302,12 +304,6 @@ export function ResultsClient({ id }: { id: string }) {
                     {String(data.policy_analysis.consequences_summary)}
                   </p>
                 ) : null}
-                {data.policy_analysis.vendor_response_supply_risks ? (
-                  <p style={{ margin: '0.5rem 0 0 0', color: '#555', fontSize: '0.95rem' }}>
-                    <strong>Vendor response / supply risks:</strong>{' '}
-                    {String(data.policy_analysis.vendor_response_supply_risks)}
-                  </p>
-                ) : null}
               </div>
             ) : (
               <p style={{ margin: 0, color: '#b45309' }}>
@@ -324,6 +320,15 @@ export function ResultsClient({ id }: { id: string }) {
         ) : (
           <div style={{ color: '#666' }}>No policy analysis available.</div>
         )}
+      </Card>
+
+      <Card title="Fulfillment & enforcement context">
+        <p style={{ margin: 0, color: '#666', fontSize: '0.95rem' }}>
+          This section will use Target&apos;s fulfillment history with the vendor to highlight any known inventory issues related to MAP enforcement. Use this context when deciding whether to follow MAP.
+        </p>
+        <p style={{ margin: '0.5rem 0 0 0', color: '#888', fontSize: '0.9rem' }}>
+          Coming later.
+        </p>
       </Card>
 
       <Card title="Next steps">
@@ -353,8 +358,8 @@ export function ResultsClient({ id }: { id: string }) {
             return (
               <p style={{ margin: 0, color: '#666' }}>
                 {data?.recommendation?.action === 'proceed'
-                  ? 'Policy looks acceptable from an applicability and consequences standpoint. Competitor price checks (coming later) will refine this.'
-                  : 'Review the policy applicability and consequences above and consider discussing with the vendor.'}
+                  ? 'Policy looks acceptable from an applicability and consequences standpoint. We support strict consequences so long as they are followed uniformly.'
+                  : 'Review the policy applicability and consequences above and consider discussing with the vendor. We support strict consequences so long as they are followed uniformly.'}
               </p>
             )
           })()}

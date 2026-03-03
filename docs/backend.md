@@ -105,8 +105,8 @@ The backend must:
 - **Outputs:**
   1. **Applicability:** Boolean or enum: applies to all retailers vs limited to a segment/channel. If limited, short description (e.g. "big box retailers only").
   2. **Consequences:** Boolean: are there specific action steps for violations? Optional: extracted summary (e.g. "1st warning, 2nd 90-day cutoff, 3rd suspension").
-  3. *(User research / future or phased)* **Severity rating** (high/medium/low) for consequences based on how consequential violations are for retailers; **timeline** for when consequences take effect. Policies vary: some lack consequence details, others are very specific.
-  4. *(User research)* Support helping users understand **vendor response speed and supply cut-off risks** (data/features can be placeholder in MVP).
+  3. *(User research / future or phased)* **Severity rating** (high/medium/low) for consequences; **timeline** for when consequences take effect. Frame consequences positively: **we support strict consequences when the vendor applies them uniformly**. Do not treat consequences as something to challenge.
+  4. **Fulfillment & enforcement context (future):** Not derived from policy text. A separate data source: **Target's fulfillment history with the vendor**, to highlight known **inventory issues related to MAP enforcement**. Context for deciding whether to follow MAP. Placeholder in MVP.
 
 ### 5.2 Implementation
 

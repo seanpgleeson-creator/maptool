@@ -38,7 +38,8 @@ See [capabilitiesexp.md](capabilitiesexp.md) for the full list.
 
 - MVP disclaimer on every page.
 - MAP vs market flag in results and recommendation.
-- Policy analysis: severity + timeline for consequences, vendor response/supply-cut-off.
+- Policy analysis: severity + timeline for consequences. Consequences framed positively: we support strict consequences when applied uniformly.
+- **Fulfillment & enforcement context (future):** Separate section (not from policy). Placeholder for Target's fulfillment history with the vendor; will highlight known inventory issues related to MAP enforcement. Context for deciding whether to follow MAP.
 - Placeholder for vendor history (post-MVP).
 - Bulk: competitive landscape view and Excel report (when bulk is released).
 

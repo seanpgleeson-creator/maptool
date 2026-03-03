@@ -17,8 +17,9 @@ const POLICY_INFO_COPY = (
       <li style={{ marginBottom: 6 }}>
         <strong>Consequences</strong> — Does the policy spell out specific steps
         for violations (e.g. first warning, second 90-day cutoff, third
-        termination)? We flag when consequences are vague so you can ask the
-        vendor for clarity.
+        termination)? We support strict consequences so long as the vendor
+        applies them uniformly. When consequences are vague, we suggest asking
+        the vendor for clear steps.
       </li>
       <li style={{ marginBottom: 6 }}>
         <strong>Competitive prices</strong> — We compare the MAP price to
@@ -29,8 +30,8 @@ const POLICY_INFO_COPY = (
         <strong>Next step</strong> — Based on the above, we recommend either
         &quot;Discuss with vendor&quot; (e.g. if the policy is segment-only,
         consequences are unclear, or MAP is above market) or &quot;Proceed&quot;
-        (if the policy applies to all, consequences are specific, and MAP is
-        reasonable).
+        (if the policy applies to all, consequences are specific and applied
+        uniformly, and MAP is reasonable).
       </li>
     </ul>
   </>
