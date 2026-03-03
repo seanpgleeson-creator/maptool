@@ -19,7 +19,11 @@ const POLICY_INFO_COPY = (
         for violations (e.g. first warning, second 90-day cutoff, third
         termination)? We support strict consequences so long as the vendor
         applies them uniformly. When consequences are vague, we suggest asking
-        the vendor for clear steps.
+        the vendor for clear steps. When following up and the policy has
+        specific consequences, emphasize that uniform and consistent
+        enforcement is important — we are not challenging the consequences,
+        which are good if materially punitive, but they are only effective
+        if actually enforced.
       </li>
       <li style={{ marginBottom: 6 }}>
         <strong>Competitive prices</strong> — We compare the MAP price to

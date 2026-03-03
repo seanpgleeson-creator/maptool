@@ -304,6 +304,9 @@ export function ResultsClient({ id }: { id: string }) {
                     {String(data.policy_analysis.consequences_summary)}
                   </p>
                 ) : null}
+                <p style={{ margin: '0.75rem 0 0 0', color: '#555', fontSize: '0.9rem' }}>
+                  When following up with the vendor, emphasize that these consequences should be uniformly and consistently enforced. The intent is not to challenge the consequences — specific, materially punitive consequences are good, but only effective if actually enforced.
+                </p>
               </div>
             ) : (
               <p style={{ margin: 0, color: '#b45309' }}>
@@ -345,22 +348,40 @@ export function ResultsClient({ id }: { id: string }) {
               ? (data!.recommendation!.reasons as string[])
               : []
             if (reasons.length > 0) {
+              const isDiscuss = data?.recommendation?.action !== 'proceed'
+              const hasSpecificConsequences = data?.policy_analysis?.consequences_specific === true
               return (
-                <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
-                  {reasons.map((r, i) => (
-                    <li key={i} style={{ marginBottom: 4 }}>
-                      {typeof r === 'string' ? r : String(r)}
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
+                    {reasons.map((r, i) => (
+                      <li key={i} style={{ marginBottom: 4 }}>
+                        {typeof r === 'string' ? r : String(r)}
+                      </li>
+                    ))}
+                  </ul>
+                  {isDiscuss && hasSpecificConsequences ? (
+                    <p style={{ margin: '0.75rem 0 0 0', color: '#555', fontSize: '0.9rem' }}>
+                      Emphasize to the vendor that it is important these consequences are uniformly and consistently enforced. The intent is not to challenge the consequences — specific, materially punitive consequences are good, but only if they are actually enforced.
+                    </p>
+                  ) : null}
+                </>
               )
             }
+            const isDiscuss = data?.recommendation?.action !== 'proceed'
+            const hasSpecificConsequences = data?.policy_analysis?.consequences_specific === true
             return (
-              <p style={{ margin: 0, color: '#666' }}>
-                {data?.recommendation?.action === 'proceed'
-                  ? 'Policy looks acceptable from an applicability and consequences standpoint. We support strict consequences so long as they are followed uniformly.'
-                  : 'Review the policy applicability and consequences above and consider discussing with the vendor. We support strict consequences so long as they are followed uniformly.'}
-              </p>
+              <>
+                <p style={{ margin: 0, color: '#666' }}>
+                  {data?.recommendation?.action === 'proceed'
+                    ? 'Policy looks acceptable from an applicability and consequences standpoint. We support strict consequences so long as they are followed uniformly.'
+                    : 'Review the policy applicability and consequences above and consider discussing with the vendor. We support strict consequences so long as they are followed uniformly.'}
+                </p>
+                {isDiscuss && hasSpecificConsequences ? (
+                  <p style={{ margin: '0.75rem 0 0 0', color: '#555', fontSize: '0.9rem' }}>
+                    Emphasize to the vendor that it is important these consequences are uniformly and consistently enforced. The intent is not to challenge the consequences — specific, materially punitive consequences are good, but only if they are actually enforced.
+                  </p>
+                ) : null}
+              </>
             )
           })()}
         </div>
