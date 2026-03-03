@@ -24,6 +24,9 @@ type AssessmentResponse = {
     segment_description: string | null
     consequences_specific: boolean | null
     consequences_summary: string | null
+    consequence_severity?: string | null
+    consequence_timeline?: string | null
+    vendor_response_supply_risks?: string | null
   }
   recommendation?: null | {
     action: string
@@ -131,6 +134,29 @@ export function ResultsClient({ id }: { id: string }) {
             <div>
               <strong>MAP:</strong> {item.map_price}
             </div>
+            {(() => {
+              const walmart = item.competitor_prices.find((cp) => cp.source === 'walmart')
+              const walmartPrice = walmart?.price != null ? Number(walmart.price) : null
+              const mapNum = Number(item.map_price)
+              const mapAboveMarket =
+                walmartPrice != null && Number.isFinite(mapNum) && mapNum > walmartPrice
+              return mapAboveMarket ? (
+                <div
+                  style={{
+                    marginTop: 10,
+                    padding: '0.5rem 0.75rem',
+                    background: '#fff8e6',
+                    border: '1px solid #e6c84c',
+                    borderRadius: 8,
+                    fontSize: '0.9rem',
+                    color: '#7a5c00',
+                  }}
+                >
+                  <strong>Negotiation follow-up needed</strong> — MAP is above current Walmart
+                  retail; this MAP would make pricing uncompetitive.
+                </div>
+              ) : null
+            })()}
             <div style={{ marginTop: 12 }}>
               {item.competitor_prices.length === 0 ? (
                 <div style={{ color: '#666' }}>
@@ -245,9 +271,29 @@ export function ResultsClient({ id }: { id: string }) {
                 <p style={{ margin: 0, fontWeight: 600 }}>
                   Policy states specific consequences for violations.
                 </p>
+                {data.policy_analysis.consequence_severity ? (
+                  <p style={{ margin: '0.5rem 0 0 0', color: '#333' }}>
+                    <strong>Severity:</strong>{' '}
+                    <span style={{ textTransform: 'capitalize' }}>
+                      {data.policy_analysis.consequence_severity}
+                    </span>
+                  </p>
+                ) : null}
+                {data.policy_analysis.consequence_timeline ? (
+                  <p style={{ margin: '0.25rem 0 0 0', color: '#333' }}>
+                    <strong>Timeline:</strong>{' '}
+                    {data.policy_analysis.consequence_timeline}
+                  </p>
+                ) : null}
                 {data.policy_analysis.consequences_summary ? (
                   <p style={{ margin: '0.5rem 0 0 0', color: '#333' }}>
                     {data.policy_analysis.consequences_summary}
+                  </p>
+                ) : null}
+                {data.policy_analysis.vendor_response_supply_risks ? (
+                  <p style={{ margin: '0.5rem 0 0 0', color: '#555', fontSize: '0.95rem' }}>
+                    <strong>Vendor response / supply risks:</strong>{' '}
+                    {data.policy_analysis.vendor_response_supply_risks}
                   </p>
                 ) : null}
               </div>

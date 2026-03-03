@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { MvpDisclaimer } from './components/MvpDisclaimer'
 
 export const metadata: Metadata = {
   title: 'MAPtool',
@@ -12,7 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <MvpDisclaimer />
+        {children}
+      </body>
     </html>
   )
 }

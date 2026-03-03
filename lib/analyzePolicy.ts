@@ -5,6 +5,9 @@ export type PolicyAnalysisResult = {
   segmentDescription: string | null
   consequencesSpecific: boolean
   consequencesSummary: string | null
+  consequenceSeverity: 'high' | 'medium' | 'low' | null
+  consequenceTimeline: string | null
+  vendorResponseSupplyRisks: string | null
 }
 
 const SYSTEM_PROMPT = `You analyze MAP (Minimum Advertised Price) policy documents from vendors/suppliers.
@@ -15,6 +18,9 @@ const USER_PROMPT = (policyText: string) => `Analyze this MAP policy text and re
 - "segmentDescription": string | null — if appliesToAllRetailers is false, a short plain-language description of which segment (e.g. "big box retailers only"); otherwise null.
 - "consequencesSpecific": boolean — true if the policy states specific action steps for violations (e.g. "first violation: warning; second: 90-day supply cutoff; third: termination"). false if consequences are vague or not stated.
 - "consequencesSummary": string | null — if consequencesSpecific is true, a brief summary of the steps (1–2 sentences); otherwise null.
+- "consequenceSeverity": "high" | "medium" | "low" | null — severity of consequences for retailers: high (e.g. quick supply cutoff, termination), medium (e.g. warnings then cutoff), low (e.g. warnings only). Use null if the policy does not state consequences.
+- "consequenceTimeline": string | null — when consequences take effect (e.g. "First violation: warning; second within 90 days: 90-day supply cutoff; third: termination"). Brief plain language; null if not stated.
+- "vendorResponseSupplyRisks": string | null — brief note on vendor response speed and supply cut-off risks (e.g. "Vendor has cut supply in the past for violations" or "Policy does not mention enforcement history"). null if not inferable.
 
 Policy text:
 ---
@@ -45,6 +51,7 @@ export async function analyzePolicy(
     if (!raw) return { ok: false, error: 'Empty response from policy analysis.' }
 
     const parsed = JSON.parse(raw) as Record<string, unknown>
+    const severity = parsed.consequenceSeverity
     const result: PolicyAnalysisResult = {
       appliesToAllRetailers: Boolean(parsed.appliesToAllRetailers),
       segmentDescription:
@@ -55,6 +62,18 @@ export async function analyzePolicy(
       consequencesSummary:
         typeof parsed.consequencesSummary === 'string'
           ? parsed.consequencesSummary
+          : null,
+      consequenceSeverity:
+        severity === 'high' || severity === 'medium' || severity === 'low'
+          ? severity
+          : null,
+      consequenceTimeline:
+        typeof parsed.consequenceTimeline === 'string'
+          ? parsed.consequenceTimeline
+          : null,
+      vendorResponseSupplyRisks:
+        typeof parsed.vendorResponseSupplyRisks === 'string'
+          ? parsed.vendorResponseSupplyRisks
           : null,
     }
     return { ok: true, result }

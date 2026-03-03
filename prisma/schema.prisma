@@ -111,6 +111,10 @@ model PolicyAnalysis {
   segmentDescription    String?
   consequencesSpecific  Boolean?
   consequencesSummary   String?
+  // User research: severity, timeline, vendor response/supply-cut-off (F12a, F12b)
+  consequenceSeverity   String?   // "high" | "medium" | "low"
+  consequenceTimeline   String?
+  vendorResponseSupplyRisks String?
 }
 
 model Recommendation {

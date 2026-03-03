@@ -2,7 +2,7 @@
 
 This checklist is **feature-driven**: work is ordered by user-facing capability (setup → single-item flow → competitor prices → policy AI → bulk → polish), not by layer. Use **GitHub** for the repo and **Vercel** for hosting; **test in production** (Vercel production URL) after each phase. Tasks that can be executed in parallel are marked **[PARALLEL]** with the contract (API/DB shape) so both tracks can proceed at once.
 
-References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md).
+References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md), [capabilitiesexp.md](capabilitiesexp.md).
 
 ---
 
@@ -26,47 +26,47 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md).
 
 **[PARALLEL]** Backend: stack + DB schema + API routes **|** Frontend: Next.js app + Home + Single-item form + Results page (stub polling). Contract: API request/response shapes above.
 
-- [ ] Deploy to Vercel; test in production: submit single-item form, see pending then stub result.
+- [x] Deploy to Vercel; test in production: submit single-item form, see pending then stub result.
 
 ---
 
 ## 3. Single-item submission and storage
 
-- [ ] Accept policy file in API (multipart); validate type (.doc, .pdf) and size (e.g. 10 MB); store file in object storage; create Assessment, AssessmentItem, PolicyDocument records.
-- [ ] Policy text extraction: extract text from uploaded PDF and DOC (e.g. pdfplumber / PyMuPDF, mammoth or similar); store in PolicyDocument; handle extraction failure (still create assessment, policy section later shows "Could not read policy").
-- [ ] Enqueue or invoke assessment job after create: job (for now) updates status to running then completed, optionally with mock competitor prices and mock policy analysis so the full result shape is present.
-- [ ] Frontend: after submit, navigate to results page with `assessment_id`; show step-by-step progress (e.g. "Checking competitor prices…", "Reviewing policy…") — can be driven by status or a `step` field from API; show chat-like result sections (competitive prices, policy applicability, consequences, enforcement, next steps) with mock/stub content.
+- [x] Accept policy file in API (multipart); validate type (.doc, .pdf) and size (e.g. 10 MB); store file in object storage; create Assessment, AssessmentItem, PolicyDocument records.
+- [x] Policy text extraction: extract text from uploaded PDF and DOC (e.g. pdfplumber / PyMuPDF, mammoth or similar); store in PolicyDocument; handle extraction failure (still create assessment, policy section later shows "Could not read policy").
+- [x] Enqueue or invoke assessment job after create: job (for now) updates status to running then completed, optionally with mock competitor prices and mock policy analysis so the full result shape is present.
+- [x] Frontend: after submit, navigate to results page with `assessment_id`; show step-by-step progress (e.g. "Checking competitor prices…", "Reviewing policy…") — can be driven by status or a `step` field from API; show chat-like result sections (competitive prices, policy applicability, consequences, enforcement, next steps) with mock/stub content.
 
 **[PARALLEL]** Backend: upload + extraction + job wiring **|** Frontend: navigation after submit + progress messages + result layout (chat-like blocks). Contract: GET response includes status and, when completed, items, competitor_prices, policy_analysis, recommendation.
 
-- [ ] Deploy and test in production: upload real PDF; see progress and stub result.
+- [x] Deploy and test in production: upload real PDF; see progress and stub result.
 
 ---
 
 ## 4. Competitor prices (scraping)
 
 - [ ] Implement scraper for Amazon (by UPC): fetch advertised price; handle timeouts and failures; optional cache keyed by UPC + source with TTL (e.g. Redis or KV). *Deferred: UI shows “Amazon — Coming soon.”*
-- [x] Implement lookup for Walmart (by UPC): `lib/walmart.ts` fetches Walmart search by UPC, returns listing URL (always) and price when parseable; store CompetitorPrice with listingUrl and errorMessage on failure.
+- [x] Implement lookup for Walmart (by UPC): `lib/walmart.ts` — when `SCRAPINGDOG_API_KEY` is set, uses **ScrapingDog + UPCitemdb** (Option D hybrid: UPCitemdb product page parsed for Walmart price/link). Otherwise direct Walmart search by UPC. Store CompetitorPrice with listingUrl and errorMessage on failure. See [walmart-price-sources.md](walmart-price-sources.md).
 - [x] Wire assessment flow: after creating assessment and item, run Walmart lookup; create CompetitorPrice for walmart and amazon (amazon placeholder “Coming soon”); then continue with policy extraction and AI.
 - [x] API: GET /api/assessments/[id] returns competitor prices (price, listing_url, error); partial results supported.
 - [x] Frontend: display competitive prices (MAP, Walmart with price and “View product →” link; Amazon “Coming soon”); show “Unavailable” when a source failed; keep chat-like layout.
 
 **[PARALLEL]** Backend: scrapers + job integration + cache **|** Frontend: competitive prices and per-item messaging in result view. Contract: CompetitorPrice shape and partial nulls.
 
-- [ ] Deploy and test in production: run assessment with real UPC(s); verify Walmart price/link (or graceful “Unavailable”) and recommendation reflects competitiveness.
+- [x] Deploy and test in production: run assessment with real UPC(s); verify Walmart price/link (or graceful “Unavailable”) and recommendation reflects competitiveness.
 
 ---
 
 ## 5. Policy analysis (AI) and recommendation
 
-- [ ] LLM integration: structured prompt (policy text → applicability + segment description + consequences specific + consequences summary); structured output (JSON); store in PolicyAnalysis.
-- [ ] Wire job: after competitor prices, run policy analysis once per assessment; compute enforcement signal (competitors at/above MAP); compute recommendation (discuss vs proceed) and reasons per prd.md F17.
-- [ ] API: GET returns policy_analysis (applicability, segment, consequences, summary) and recommendation (action, reasons, per_item_summary if bulk).
-- [ ] Frontend: result sections for Policy applicability, Policy consequences, Enforcement, Next steps (Discuss / Proceed + reasons); merchant language only; accessible headings.
+- [x] LLM integration: structured prompt (policy text → applicability + segment description + consequences specific + consequences summary); structured output (JSON); store in PolicyAnalysis.
+- [x] Wire job: after competitor prices, run policy analysis once per assessment; compute enforcement signal (competitors at/above MAP); compute recommendation (discuss vs proceed) and reasons per prd.md F17.
+- [x] API: GET returns policy_analysis (applicability, segment, consequences, summary) and recommendation (action, reasons, per_item_summary if bulk).
+- [x] Frontend: result sections for Policy applicability, Policy consequences, Enforcement, Next steps (Discuss / Proceed + reasons); merchant language only; accessible headings.
 
 **[PARALLEL]** Backend: LLM + enforcement + recommendation logic **|** Frontend: policy and next-steps blocks in result view. Contract: PolicyAnalysis and Recommendation fields.
 
-- [ ] Deploy and test in production: run assessment with real policy doc; verify applicability, consequences, enforcement, and Discuss/Proceed with reasons.
+- [x] Deploy and test in production: run assessment with real policy doc; verify applicability, consequences, enforcement, and Discuss/Proceed with reasons.
 
 ---
 
@@ -87,14 +87,26 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md).
 
 - [ ] Progress messages: backend exposes current step (e.g. "fetching_prices", "analyzing_policy") or frontend infers from status; show "Checking Amazon…", "Checking Walmart…", "Reviewing policy…".
 - [x] **Info interstitial:** Info button (ℹ️) on Single item and Assessment results page opens a modal (“What we look for in the policy”) explaining applicability, consequences, competitive prices, and next-step recommendation in merchant language.
-- [ ] Error and edge cases: friendly messages (e.g. "We couldn't find this item on Amazon. Check the UPC or try again later."); partial results when policy extraction or AI fails; empty state for first-time user (ui.md).
+- [x] Error and edge cases: friendly messages (e.g. "We couldn't find this item on Amazon. Check the UPC or try again later."); partial results when policy extraction or AI fails; empty state for first-time user (ui.md).
 - [ ] Security and ops: validate all file types and sizes; rate limiting on POST and GET; secrets in env (Vercel env vars); no executable uploads.
 - [ ] Accessibility and responsive: keyboard-accessible uploads; headings in result sections; responsive layout (laptop and tablet).
 - [ ] Final production test: run single-item and bulk flows end-to-end on Vercel production URL; confirm chat-like output, Discuss/Proceed, and partial failure behavior.
 
 ---
 
-## 8. Optional / post-MVP
+## 8. Next priority (user feedback)
+
+*Source: [capabilitiesexp.md](capabilitiesexp.md). Implementation order: 1 → 2 → 3 for MVP; 4 and 5 when moving to history and bulk.*
+
+- [x] **Data accuracy:** MVP disclaimer at top of page (e.g. “Not all data may be 100% accurate — this experience is for example purposes”); set expectations for data limitations. (F26a; ui.md 4.1.)
+- [x] **Competitive pricing:** Flag when MAP > Walmart retail: show negotiation follow-up needed and that MAP would make pricing uncompetitive; Walmart as primary source. (F15a; ui.md Section 4.)
+- [x] **Policy assessment:** Severity rating (high/medium/low) and timeline for consequences; vendor response speed and supply cut-off risks in policy output and UI. (F12a, F12b; ui.md Section 4.)
+- [x] **Vendor history (later):** Placeholder section for historical MAP enforcement (which vendors cut off supply vs threaten; worth following MAP for). (Section 6.1; post-MVP.)
+- [ ] **Bulk phase (later):** Competitive landscape per item; Excel report generation for bulk uploads. (Section 6.1, 4.2; when bulk is released.)
+
+---
+
+## 9. Optional / post-MVP
 
 - [ ] History: list past assessments (date, outcome); optional for MVP (prd F31).
 - [ ] Competitor price cache: Redis or KV with TTL to reduce scraping (prd F9).
@@ -108,6 +120,7 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md).
 | ----- | ---------------- |
 | 2. Foundation | Backend (stack, DB, API) \| Frontend (app, form, results stub) |
 | 3. Single-item E2E | Backend (upload, extraction, job) \| Frontend (navigation, progress, result layout) |
-| 4. Competitor prices | Backend (scrapers, job, cache) \| Frontend (prices in result UI) |
+| 4. Competitor prices | Backend (Walmart via ScrapingDog/UPCitemdb or direct, job) \| Frontend (prices in result UI) |
 | 5. Policy AI | Backend (LLM, recommendation) \| Frontend (policy + next-steps blocks) |
 | 6. Bulk | Backend (bulk API, job fan-out) \| Frontend (bulk upload + table) |
+| 8. Next priority | Backend (MAP>market flag in recommendation, severity/timeline in policy output) \| Frontend (disclaimer, MAP flag in results, severity/timeline in consequences) |

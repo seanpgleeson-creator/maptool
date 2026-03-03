@@ -29,6 +29,18 @@ Without this, merchants cannot confidently decide whether to push back or accept
 - **Experience:** Elegant, simple UI with chat-like output (no internal jargon like “scraping” or “AI”).
 - **Scope:** Single-item and bulk workflows; Amazon and Walmart as competitors; .doc and .pdf policy uploads.
 
+### Next priority (user feedback)
+
+The following capabilities are the next priority; source: [capabilitiesexp.md](capabilitiesexp.md).
+
+1. **Data accuracy:** MVP disclaimer at top of page; set expectations for data limitations. (Already: F26a.)
+2. **Competitive pricing:** Flag when MAP > Walmart retail (negotiation follow-up needed; uncompetitive). Walmart as primary source. (Already: F15a, 4.2 note.)
+3. **Policy assessment:** Severity rating (high/medium/low) and timeline for consequences; vendor response speed and supply cut-off risks. (Already: F12a, F12b.)
+4. **Vendor history (later):** Placeholder for historical MAP enforcement. (Already: 6.1.)
+5. **Bulk phase (later):** Competitive landscape per item; Excel report generation. (Already: 6.1, 4.2.)
+
+Existing requirements F26a, F15a, F12a, F12b and Section 6.1 implement these; this section sets their order of execution.
+
 ---
 
 ## 2. User persona
@@ -207,5 +219,6 @@ Storage: relational DB (e.g. Postgres or SQLite for MVP); object storage for pol
 ## 10. References
 
 - **description.md** — Original product vision and feature set; **User research update (March 2026)** for enhancement themes.  
+- **capabilitiesexp.md** — User feedback and next-priority capabilities (source for the list in Section 1 Next priority).
 - **ui.md** — UI findings: flows, output structure, navigation, edge cases, accessibility.
 - **backend.md** — Backend findings: data model, ingestion, scraping, AI, API, security, technology options.

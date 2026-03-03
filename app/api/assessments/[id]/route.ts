@@ -49,6 +49,9 @@ export async function GET(
             segment_description: assessment.policyAnalysis.segmentDescription,
             consequences_specific: assessment.policyAnalysis.consequencesSpecific,
             consequences_summary: assessment.policyAnalysis.consequencesSummary,
+            consequence_severity: assessment.policyAnalysis.consequenceSeverity,
+            consequence_timeline: assessment.policyAnalysis.consequenceTimeline,
+            vendor_response_supply_risks: assessment.policyAnalysis.vendorResponseSupplyRisks,
           }
         : null,
       recommendation: assessment.recommendation

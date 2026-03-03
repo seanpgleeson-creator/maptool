@@ -203,6 +203,9 @@ export async function POST(req: Request) {
               segmentDescription: r.segmentDescription,
               consequencesSpecific: r.consequencesSpecific,
               consequencesSummary: r.consequencesSummary,
+              consequenceSeverity: r.consequenceSeverity,
+              consequenceTimeline: r.consequenceTimeline,
+              vendorResponseSupplyRisks: r.vendorResponseSupplyRisks,
             },
           })
           if (!r.appliesToAllRetailers && r.segmentDescription) {
@@ -224,6 +227,15 @@ export async function POST(req: Request) {
           }
         }
       }
+    }
+
+    // MAP vs market: if MAP > Walmart retail, flag for negotiation (user research F15a)
+    const walmartPriceNum = walmartResult.price
+    if (walmartPriceNum != null && Number.isFinite(walmartPriceNum) && mapPrice > walmartPriceNum) {
+      reasons.push(
+        'MAP is above current Walmart retail. Negotiation follow-up needed; MAP would make pricing uncompetitive.',
+      )
+      action = 'discuss'
     }
 
     await prisma.recommendation.update({

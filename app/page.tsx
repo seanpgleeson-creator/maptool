@@ -50,6 +50,10 @@ export default function Home() {
           MVP note: bulk upload, competitor checks, and policy review are coming
           next.
         </p>
+        <p style={{ marginTop: '0.5rem', color: '#888', fontSize: '0.9rem' }}>
+          Vendor history (coming later): track which vendors cut off supply vs
+          threaten; identify vendors worth following MAP for.
+        </p>
       </div>
     </main>
   )
