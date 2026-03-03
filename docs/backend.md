@@ -190,6 +190,16 @@ The backend must:
 
 ## 11. Summary
 
+**Next priority (user feedback)** — Next-priority capabilities from [capabilitiesexp.md](capabilitiesexp.md):
+
+- Support MVP disclaimer and data-expectations messaging (no new backend; UI only).
+- Flag MAP > market in recommendation/reasons (already in Section 7).
+- Policy analysis: add severity rating and timeline to outputs (Section 5); support vendor response/supply-cut-off where policy allows.
+- Vendor history placeholder (Section 9.1).
+- Bulk phase: Excel report (Section 9.1).
+
+Implementation order: 1 → 2 → 3 for MVP; 4 and 5 when moving to history and bulk.
+
 - **Persistence:** Assessments, items, policy metadata + extracted text, competitor prices, policy analysis, recommendation in DB; raw files in object storage; optional Redis cache for prices.
 - **Ingestion:** Validate single/bulk input; extract policy text; enqueue one job per assessment.
 - **Scraping:** Async worker; Amazon + Walmart per UPC; cache by UPC/source; tolerate partial failure.

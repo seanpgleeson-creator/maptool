@@ -32,3 +32,13 @@ This project is designed to ship quickly on **GitHub + Vercel**, and be testable
 - **Amazon:** Placeholder “Coming soon”; no fetch yet. The UI shows “Amazon — Coming soon.”
 - Lookup runs inside the assessment API (same request); partial failure is handled (e.g. price null + link still shown).
 
+### Next priority (user feedback)
+
+See [capabilitiesexp.md](capabilitiesexp.md) for the full list.
+
+- MVP disclaimer on every page.
+- MAP vs market flag in results and recommendation.
+- Policy analysis: severity + timeline for consequences, vendor response/supply-cut-off.
+- Placeholder for vendor history (post-MVP).
+- Bulk: competitive landscape view and Excel report (when bulk is released).
+

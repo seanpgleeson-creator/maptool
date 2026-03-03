@@ -11,6 +11,16 @@ Based on the product description, here are structured findings for the user inte
 
 The UI should support: entering data (UPC, MAP price, policy), running checks (competitor prices + policy review), and getting a clear “discuss or proceed” recommendation in a simple, chat-like format.
 
+### Next priority (user feedback)
+
+Capabilities from [capabilitiesexp.md](capabilitiesexp.md) in implementation order:
+
+1. **MVP disclaimer** at top of page (Section 4.1).
+2. **MAP vs market flag** in competitive prices and next steps when MAP > Walmart (Section 4).
+3. **Policy consequences:** severity (high/medium/low), timeline, vendor response/supply-cut-off (Section 4).
+4. **Vendor history** placeholder (Section 5; future).
+5. **Bulk:** competitive landscape and Excel report (Section 7; future).
+
 ---
 
 ## 2. Core flows

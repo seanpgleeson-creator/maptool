@@ -55,3 +55,5 @@ The following enhancements are based on user research. They extend the original 
   - Summary cover page with assessment overview
   - Individual item analysis with competitive data
   - Allow detailed review of MAP vs market pricing
+
+See [capabilitiesexp.md](capabilitiesexp.md) for the same list as a standalone reference for prioritization.
