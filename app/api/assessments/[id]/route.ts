@@ -33,10 +33,10 @@ export async function GET(
       items: assessment.items.map((i) => ({
         id: i.id,
         upc: i.upc,
-        map_price: i.mapPrice,
+        map_price: i.mapPrice != null ? String(i.mapPrice) : null,
         competitor_prices: i.competitorPrices.map((p) => ({
           source: p.source,
-          price: p.price,
+          price: p.price != null ? String(p.price) : null,
           currency: p.currency,
           scraped_at: p.scrapedAt,
           error: p.errorMessage,

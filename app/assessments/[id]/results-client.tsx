@@ -2,6 +2,17 @@
 
 import { useEffect, useState } from 'react'
 
+/** Safely format a price/map_price from API (may be string, number, or Prisma Decimal-like) for display. */
+function formatPrice(value: unknown): string {
+  if (value == null) return '—'
+  if (typeof value === 'number' && Number.isFinite(value)) return value.toFixed(2)
+  if (typeof value === 'string') {
+    const n = Number(value)
+    return Number.isFinite(n) ? n.toFixed(2) : value
+  }
+  return String(value)
+}
+
 type AssessmentResponse = {
   assessment_id: string
   status: string
@@ -97,6 +108,7 @@ export function ResultsClient({ id }: { id: string }) {
   if (data?.error) return <p style={{ color: '#b00020' }}>{data.error}</p>
 
   const item = data?.items?.[0]
+  const competitorPrices = item?.competitor_prices ?? []
 
   // When analysis failed (e.g. OpenAI 429), show the error from recommendation reasons
   const analysisErrorReason =
@@ -132,10 +144,10 @@ export function ResultsClient({ id }: { id: string }) {
               <strong>UPC:</strong> {item.upc}
             </div>
             <div>
-              <strong>MAP:</strong> {item.map_price}
+              <strong>MAP:</strong> {formatPrice(item.map_price)}
             </div>
             {(() => {
-              const walmart = item.competitor_prices.find((cp) => cp.source === 'walmart')
+              const walmart = competitorPrices.find((cp) => cp.source === 'walmart')
               const walmartPrice = walmart?.price != null ? Number(walmart.price) : null
               const mapNum = Number(item.map_price)
               const mapAboveMarket =
@@ -158,20 +170,20 @@ export function ResultsClient({ id }: { id: string }) {
               ) : null
             })()}
             <div style={{ marginTop: 12 }}>
-              {item.competitor_prices.length === 0 ? (
+              {competitorPrices.length === 0 ? (
                 <div style={{ color: '#666' }}>
                   No competitor price data for this assessment.
                 </div>
               ) : (
-                item.competitor_prices.map((cp) => (
+                competitorPrices.map((cp) => (
                   <div
                     key={cp.source}
                     style={{
                       marginBottom: 10,
                       padding: '8px 0',
                       borderBottom:
-                        item.competitor_prices.indexOf(cp) <
-                        item.competitor_prices.length - 1
+                        competitorPrices.indexOf(cp) <
+                        competitorPrices.length - 1
                           ? '1px solid #eee'
                           : undefined,
                     }}
@@ -188,8 +200,8 @@ export function ResultsClient({ id }: { id: string }) {
                       <>
                         <span style={{ marginLeft: 8 }}>
                           {cp.price != null
-                            ? `$${Number(cp.price).toFixed(2)}`
-                            : cp.error ?? 'Unavailable'}
+                            ? `$${formatPrice(cp.price)}`
+                            : (cp.error ?? 'Unavailable')}
                         </span>
                         {cp.listing_url ? (
                           <a
@@ -275,25 +287,25 @@ export function ResultsClient({ id }: { id: string }) {
                   <p style={{ margin: '0.5rem 0 0 0', color: '#333' }}>
                     <strong>Severity:</strong>{' '}
                     <span style={{ textTransform: 'capitalize' }}>
-                      {data.policy_analysis.consequence_severity}
+                      {String(data.policy_analysis.consequence_severity)}
                     </span>
                   </p>
                 ) : null}
                 {data.policy_analysis.consequence_timeline ? (
                   <p style={{ margin: '0.25rem 0 0 0', color: '#333' }}>
                     <strong>Timeline:</strong>{' '}
-                    {data.policy_analysis.consequence_timeline}
+                    {String(data.policy_analysis.consequence_timeline)}
                   </p>
                 ) : null}
                 {data.policy_analysis.consequences_summary ? (
                   <p style={{ margin: '0.5rem 0 0 0', color: '#333' }}>
-                    {data.policy_analysis.consequences_summary}
+                    {String(data.policy_analysis.consequences_summary)}
                   </p>
                 ) : null}
                 {data.policy_analysis.vendor_response_supply_risks ? (
                   <p style={{ margin: '0.5rem 0 0 0', color: '#555', fontSize: '0.95rem' }}>
                     <strong>Vendor response / supply risks:</strong>{' '}
-                    {data.policy_analysis.vendor_response_supply_risks}
+                    {String(data.policy_analysis.vendor_response_supply_risks)}
                   </p>
                 ) : null}
               </div>
@@ -323,22 +335,29 @@ export function ResultsClient({ id }: { id: string }) {
               <span style={{ color: '#b45309' }}>Discuss with vendor</span>
             )}
           </div>
-          {Array.isArray(data?.recommendation?.reasons) &&
-          data.recommendation.reasons.length > 0 ? (
-            <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
-              {(data.recommendation.reasons as string[]).map((r, i) => (
-                <li key={i} style={{ marginBottom: 4 }}>
-                  {r}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p style={{ margin: 0, color: '#666' }}>
-              {data?.recommendation?.action === 'proceed'
-                ? 'Policy looks acceptable from an applicability and consequences standpoint. Competitor price checks (coming later) will refine this.'
-                : 'Review the policy applicability and consequences above and consider discussing with the vendor.'}
-            </p>
-          )}
+          {(() => {
+            const reasons = Array.isArray(data?.recommendation?.reasons)
+              ? (data!.recommendation!.reasons as string[])
+              : []
+            if (reasons.length > 0) {
+              return (
+                <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
+                  {reasons.map((r, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>
+                      {typeof r === 'string' ? r : String(r)}
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
+            return (
+              <p style={{ margin: 0, color: '#666' }}>
+                {data?.recommendation?.action === 'proceed'
+                  ? 'Policy looks acceptable from an applicability and consequences standpoint. Competitor price checks (coming later) will refine this.'
+                  : 'Review the policy applicability and consequences above and consider discussing with the vendor.'}
+              </p>
+            )
+          })()}
         </div>
       </Card>
     </div>
