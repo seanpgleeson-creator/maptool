@@ -41,6 +41,14 @@ type AssessmentResponse = {
   recommendation?: null | {
     action: string
     reasons: unknown
+    per_item_summary?: Array<{
+      item_id: string
+      upc: string
+      map_price: string
+      walmart_price: number | null
+      discuss: boolean
+      reason?: string
+    }>
   }
   error?: string
 }
@@ -108,6 +116,10 @@ export function ResultsClient({ id }: { id: string }) {
 
   const item = data?.items?.[0]
   const competitorPrices = item?.competitor_prices ?? []
+  const isBulk = (data?.mode === 'bulk' || (data?.items?.length ?? 0) > 1)
+  const perItemSummary = Array.isArray(data?.recommendation?.per_item_summary)
+    ? data.recommendation.per_item_summary
+    : []
 
   // When analysis failed (e.g. OpenAI 429), show the error from recommendation reasons
   const analysisErrorReason =
@@ -133,10 +145,76 @@ export function ResultsClient({ id }: { id: string }) {
             <strong>Status:</strong> {data?.status}
             {data?.step ? ` (${data.step})` : ''}
           </div>
+          {isBulk && data?.items?.length ? (
+            <div style={{ marginTop: 6 }}>
+              <strong>Items:</strong> {data.items.length}
+            </div>
+          ) : null}
         </div>
       </Card>
 
-      <Card title="Competitive prices">
+      {isBulk && (perItemSummary.length > 0 || (data?.items?.length ?? 0) > 0) ? (
+        <Card title="Per-item summary">
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #eee', textAlign: 'left' }}>
+                  <th style={{ padding: '8px 12px 8px 0' }}>UPC</th>
+                  <th style={{ padding: '8px 12px' }}>MAP</th>
+                  <th style={{ padding: '8px 12px' }}>Walmart</th>
+                  <th style={{ padding: '8px 12px' }}>Discuss?</th>
+                </tr>
+              </thead>
+              <tbody>
+                {perItemSummary.length > 0
+                  ? perItemSummary.map((row) => (
+                      <tr key={row.item_id} style={{ borderBottom: '1px solid #eee' }}>
+                        <td style={{ padding: '8px 12px 8px 0' }}>{row.upc}</td>
+                        <td style={{ padding: '8px 12px' }}>${formatPrice(row.map_price)}</td>
+                        <td style={{ padding: '8px 12px' }}>
+                          {row.walmart_price != null
+                            ? `$${formatPrice(row.walmart_price)}`
+                            : '—'}
+                        </td>
+                        <td style={{ padding: '8px 12px' }}>
+                          {row.discuss ? (
+                            <span style={{ color: '#b45309', fontWeight: 600 }}>Yes</span>
+                          ) : (
+                            <span style={{ color: '#0d7a0d' }}>No</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  : data?.items?.map((i) => {
+                      const walmart = (i.competitor_prices ?? []).find((cp) => cp.source === 'walmart')
+                      const walmartPrice = walmart?.price != null ? Number(walmart.price) : null
+                      const mapNum = Number(i.map_price)
+                      const discuss =
+                        walmartPrice != null && Number.isFinite(mapNum) && mapNum > walmartPrice
+                      return (
+                        <tr key={i.id} style={{ borderBottom: '1px solid #eee' }}>
+                          <td style={{ padding: '8px 12px 8px 0' }}>{i.upc}</td>
+                          <td style={{ padding: '8px 12px' }}>${formatPrice(i.map_price)}</td>
+                          <td style={{ padding: '8px 12px' }}>
+                            {walmartPrice != null ? `$${formatPrice(walmartPrice)}` : '—'}
+                          </td>
+                          <td style={{ padding: '8px 12px' }}>
+                            {discuss ? (
+                              <span style={{ color: '#b45309', fontWeight: 600 }}>Yes</span>
+                            ) : (
+                              <span style={{ color: '#0d7a0d' }}>No</span>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      ) : null}
+
+      <Card title={isBulk ? 'Competitive prices (first item)' : 'Competitive prices'}>
         {item ? (
           <div>
             <div>

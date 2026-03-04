@@ -72,12 +72,12 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md), [capabil
 
 ## 6. Bulk flow
 
-- [ ] API: `POST /api/assessments/bulk` — accept items file (CSV/Excel) + policy file; parse and validate rows (UPC, MAP price); create Assessment with multiple AssessmentItems; store files; enqueue same job type.
-- [ ] Job: fan-out competitor price fetch per item; one policy analysis per run; aggregate recommendation and per_item_summary; store Recommendation with per_item_summary.
-- [ ] Frontend: Bulk upload path — upload items file then policy file; optional column mapping/preview; "Run assessment" → results with table (UPC, MAP, Amazon, Walmart, Discuss?) and same chat-style overall summary and next steps.
-- [ ] Handle many items: pagination or virtualized table; summary and recommendation always visible at top.
+- [x] API: `POST /api/assessments/bulk` — accept items file (CSV) + policy file; parse and validate rows (UPC, MAP price); create Assessment (mode bulk) with multiple AssessmentItems; store policy; process synchronously (max 20 items per run).
+- [x] Job: competitor price fetch per item (Walmart); one policy analysis per run; aggregate recommendation and per_item_summary; store Recommendation with perItemSummary.
+- [x] Frontend: Bulk upload path — upload CSV then policy file; "Run assessment" → redirect to results with table (UPC, MAP, Walmart, Discuss?) and same chat-style overall summary and next steps.
+- [x] Per-item table: summary and recommendation visible at top; compact table for per-item results (per_item_summary or derived from items).
 
-**[PARALLEL]** Backend: bulk endpoint + job fan-out + per_item_summary **|** Frontend: bulk upload UI + results table + summary. Contract: bulk payload and response shape.
+**[PARALLEL]** Backend: bulk endpoint + job + per_item_summary **|** Frontend: bulk upload UI + results table + summary. Contract: bulk payload and response shape.
 
 - [ ] Deploy and test in production: bulk upload CSV + policy; verify table and recommendation.
 
@@ -87,7 +87,7 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md), [capabil
 
 - [ ] Progress messages: backend exposes current step (e.g. "fetching_prices", "analyzing_policy") or frontend infers from status; show "Checking Amazon…", "Checking Walmart…", "Reviewing policy…".
 - [x] **Info interstitial:** Info button (ℹ️) on Single item and Assessment results page opens a modal (“What we look for in the policy”) explaining applicability, consequences, competitive prices, and next-step recommendation in merchant language.
-- [x] Error and edge cases: friendly messages (e.g. "We couldn't find this item on Amazon. Check the UPC or try again later."); partial results when policy extraction or AI fails; empty state for first-time user (ui.md).
+- [x] Error and edge cases: friendly messages; partial results when policy extraction or AI fails; empty state for first-time user (ui.md). Client-side: safe `competitor_prices` (default `[]`), `formatPrice()` for Decimals, API serializes `map_price`/`price` as strings; guard `recommendation.reasons` as array before map.
 - [ ] Security and ops: validate all file types and sizes; rate limiting on POST and GET; secrets in env (Vercel env vars); no executable uploads.
 - [ ] Accessibility and responsive: keyboard-accessible uploads; headings in result sections; responsive layout (laptop and tablet).
 - [ ] Final production test: run single-item and bulk flows end-to-end on Vercel production URL; confirm chat-like output, Discuss/Proceed, and partial failure behavior.
@@ -101,6 +101,7 @@ References: [prd.md](prd.md), [backend.md](backend.md), [ui.md](ui.md), [capabil
 - [x] **Data accuracy:** MVP disclaimer at top of page (e.g. “Not all data may be 100% accurate — this experience is for example purposes”); set expectations for data limitations. (F26a; ui.md 4.1.)
 - [x] **Competitive pricing:** Flag when MAP > Walmart retail: show negotiation follow-up needed and that MAP would make pricing uncompetitive; Walmart as primary source. (F15a; ui.md Section 4.)
 - [x] **Policy assessment:** Severity rating (high/medium/low) and timeline for consequences; frame consequences positively (support strict when applied uniformly). (F12a, F12b; ui.md Section 4.)
+- [x] **Consequences follow-up copy:** When recommendation is Discuss and policy has specific consequences, show copy that user should emphasize to the vendor that consequences must be uniformly and consistently enforced; intent is not to challenge consequences (they are good if materially punitive) but only effective if actually enforced. (Policy consequences card, Next steps card, info modal.)
 - [x] **Fulfillment & enforcement context (future):** Separate section (not from policy). Placeholder for Target fulfillment history with vendor; inventory issues related to MAP enforcement. (F12b; post-MVP.)
 - [x] **Vendor history (later):** Placeholder for historical MAP enforcement. (Section 6.1; post-MVP.)
 - [ ] **Bulk phase (later):** Competitive landscape per item; Excel report generation for bulk uploads. (Section 6.1, 4.2; when bulk is released.)

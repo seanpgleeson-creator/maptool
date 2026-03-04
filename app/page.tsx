@@ -47,8 +47,7 @@ export default function Home() {
         </div>
 
         <p style={{ marginTop: '1rem', color: '#777', fontSize: '0.95rem' }}>
-          MVP note: bulk upload, competitor checks, and policy review are coming
-          next.
+          Single-item and bulk upload (CSV + policy) are available. Walmart prices via UPCitemdb; Amazon coming soon.
         </p>
         <p style={{ marginTop: '0.5rem', color: '#888', fontSize: '0.9rem' }}>
           Vendor history (coming later): track which vendors cut off supply vs
