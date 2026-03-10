@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ItemHubPageClient } from './ItemHubPageClient'
 
 export default function ItemHubPage() {
   return (
@@ -11,16 +12,19 @@ export default function ItemHubPage() {
     >
       <div style={{ width: '100%', maxWidth: '56rem', margin: '0 auto' }}>
         <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
-          ItemHub MAP Guardrails Prototype
+          Update Item
         </h1>
-        <p style={{ color: '#666', marginBottom: '1.5rem' }}>
-          Vendor-facing item attribute input and MAP submission flow. This
-          prototype is scoped under <code>/itemhub</code> and does not modify
-          the main MAPtool experience.
+        <p style={{ color: '#666', marginBottom: '0.5rem' }}>
+          Vendor-facing item attribute input and MAP submission flow. (Phase 0 — minimal shell.)
         </p>
-        <p style={{ color: '#888', fontSize: '0.9rem' }}>
+        <ItemHubPageClient />
+        <p style={{ color: '#888', fontSize: '0.9rem', marginTop: '1.5rem' }}>
+          <Link href="/itemhub/review" style={{ color: '#0066cc' }}>
+            Reviewer console →
+          </Link>
+          {' · '}
           <Link href="/" style={{ color: '#0066cc' }}>
-            ← Back to MAPtool
+            Back to MAPtool
           </Link>
         </p>
       </div>

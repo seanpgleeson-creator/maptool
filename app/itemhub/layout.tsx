@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { ItemHubProvider } from '@/lib/itemhub/ItemHubProvider'
 
 export const metadata: Metadata = {
   title: 'ItemHub | MAPtool',
@@ -10,5 +11,5 @@ export default function ItemHubLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  return <ItemHubProvider>{children}</ItemHubProvider>
 }
