@@ -3,6 +3,7 @@
  * Single place for status transitions, eligibility rule, and flag creation.
  */
 import type {
+  CoveredChannel,
   Item,
   ItemHubState,
   MAPSubmission,
@@ -103,7 +104,7 @@ const emptyMetadata = {
   effectiveDate: '',
   expirationDate: '',
   coveredProducts: 'this_item_only' as const,
-  coveredChannels: [] as const,
+  coveredChannels: [] as CoveredChannel[],
   enforcementMechanism: 'notice_cure' as const,
   contactName: '',
   contactEmail: '',
