@@ -190,7 +190,6 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
               accept=".pdf,.doc,.docx"
               onChange={(e) => {
                 const name = e.target.files?.[0]?.name ?? ''
-                setPolicyFileName(name)
                 onSubmissionChange({ ...sub, policyFileName: name || null, updatedAt: new Date().toISOString() })
               }}
               style={{ fontSize: '0.8125rem' }}
