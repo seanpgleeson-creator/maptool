@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { Item, MAPSubmission, MAPSubmissionMetadata, MAPAttestations } from '@/lib/itemhub/types'
-import type { CoveredProducts, CoveredChannel, EnforcementMechanism } from '@/lib/itemhub/types'
+import type { CoveredProducts, EnforcementMechanism } from '@/lib/itemhub/types'
 import { createDraftSubmission, createNotProvidedSubmission } from '@/lib/itemhub/store'
 
 const STATUS_LABELS: Record<string, string> = {
@@ -71,7 +71,7 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
   const attestations = sub.attestations
   const hasMetadata = metadata && metadata.effectiveDate && metadata.expirationDate && metadata.contactName && metadata.contactEmail
   const needsCureDays = metadata?.enforcementMechanism === 'notice_cure' && (metadata.cureDays == null || metadata.cureDays === 0)
-  const allAttestations = attestations?.specific && attestations?.uniform && attestations?.enforced && attestations?.independentPricing
+  const allAttestations = attestations?.specific && attestations?.uniform && attestations?.enforced
   const canSubmit = mapApplies && sub.mapValue != null && sub.mapValue > 0 && policyFileName.trim() !== '' && hasMetadata && !needsCureDays && allAttestations && !mapExceedsMsrp
 
   const handleMapAppliesChange = (yes: boolean) => {
@@ -233,26 +233,6 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
                 </select>
               </div>
               <div style={styles.fieldset}>
-                <span style={styles.label}>Covered channels *</span>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
-                  {(['online', 'in_store', 'marketplace', 'other'] as CoveredChannel[]).map((ch) => (
-                    <label key={ch} style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-                      <input
-                        type="checkbox"
-                        checked={metadata.coveredChannels.includes(ch)}
-                        onChange={(e) => {
-                          const next = e.target.checked
-                            ? [...metadata.coveredChannels, ch]
-                            : metadata.coveredChannels.filter((c) => c !== ch)
-                          updateMetadata({ coveredChannels: next })
-                        }}
-                      />
-                      {ch.replace('_', '-')}
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <div style={styles.fieldset}>
                 <label style={styles.label}>Enforcement mechanism *</label>
                 <select
                   value={metadata.enforcementMechanism}
@@ -302,10 +282,7 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
             MAP is optional. If you provide a MAP value, you must upload a MAP policy that is specific and uniformly enforced with no exceptions.
           </p>
           <p style={styles.copy}>
-            Target sets resale prices independently. Submissions are reviewed and may be considered as an input, but Target does not coordinate resale pricing with vendors or other retailers.
-          </p>
-          <p style={styles.copy}>
-            MAP submissions are not automatically applied. Only accepted submissions are eligible to be considered as a pricing guardrail.
+            MAP prices are not automatically used as a guardrail for price decisions. Price decisions are at the sole discretion of Target Corporation.
           </p>
 
           {attestations && (
@@ -317,7 +294,7 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
                   checked={attestations.specific}
                   onChange={(e) => updateAttestations({ specific: e.target.checked })}
                 />
-                Policy is specific (products/channels/terms clearly defined)
+                Policy is specific (products/terms clearly defined)
               </label>
               <label style={styles.checkboxRow}>
                 <input
@@ -325,7 +302,7 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
                   checked={attestations.uniform}
                   onChange={(e) => updateAttestations({ uniform: e.target.checked })}
                 />
-                Uniformly enforced with no retailer/segment exceptions
+                Uniformly enforced with no retailer segment or channel exceptions
               </label>
               <label style={styles.checkboxRow}>
                 <input
@@ -334,14 +311,6 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
                   onChange={(e) => updateAttestations({ enforced: e.target.checked })}
                 />
                 Actively enforced (not dormant)
-              </label>
-              <label style={styles.checkboxRow}>
-                <input
-                  type="checkbox"
-                  checked={attestations.independentPricing}
-                  onChange={(e) => updateAttestations({ independentPricing: e.target.checked })}
-                />
-                Target prices independently (no coordination; anti-collusion clarity)
               </label>
             </div>
           )}

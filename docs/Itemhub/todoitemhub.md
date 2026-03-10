@@ -61,28 +61,38 @@ Feature-driven order. Tasks marked **[PARALLEL]** can be executed in parallel wi
 
 ---
 
-## Phase 4: "Behind the scenes" drawer (vendor education)
+## UI updates (post–Phase 3)
 
-*Feature: transparency and live Comp Intel example.*
+*Documented changes to MAP section and vendor copy.*
 
-- [ ] **4.1** Info button "How Target reviews MAP" next to MAP section title; opens right-side drawer (or modal).
-- [ ] **4.2** Drawer content (four sections): (1) What happens when you submit MAP, (2) How MAP may be used, (3) What may cause follow-up, (4) **Live example**: Market Price $X, Submitted MAP $Y, Delta, flag status (MAP_NEAR_MARKET / MAP_ABOVE_MARKET / COMP_INTEL_STALE). Use current item’s compIntel and current submission mapValue.
+- [x] **Covered channels:** Removed from policy metadata form. Universal channel enforcement is part of MAP policy validity (policy not valid if there are channel limitations); this is covered in attestations (uniform enforcement with no channel exceptions) rather than a separate "what channels" question.
+- [x] **Attestation 1:** "Policy is specific (products/terms clearly defined)" — channels removed from specificity.
+- [x] **Attestation 2:** "Uniformly enforced with no retailer segment or channel exceptions."
+- [x] **Attestation 3 only:** Removed fourth checkbox ("Target prices independently…"). Required attestations are now three: specific, uniform, enforced.
+- [x] **Vendor copy removed:** "Target sets resale prices independently. Submissions are reviewed…" — removed.
+- [x] **Guardrail copy updated:** "MAP prices are not automatically used as a guardrail for price decisions. Price decisions are at the sole discretion of Target Corporation."
 
-**Parallel:** Can run in parallel with Phase 5 (Reviewer console) once Phase 3 is done; both only need store and item/submission data.
+---
+
+## Phase 4: ~~"Behind the scenes" drawer~~ (cancelled)
+
+*Vendor does not need additional information; no vendor-facing drawer.*
+
+- **4.x** Cancelled. Comp Intel and live example (market price, MAP, delta, flag status) are **reviewer-only** — see Phase 5 (Reviewer console). No info button or drawer on the vendor Update Item screen.
 
 ---
 
 ## Phase 5: Reviewer console
 
-*Feature: internal view — queue, detail, actions, comments.*
+*Feature: internal view — queue, detail, Comp Intel + flags, actions, comments.*
 
-- [ ] **5.1** Route `/itemhub/review` (or header "View as: Vendor | Target Reviewer" toggle). Reviewer view: queue of MAP submissions.
-- [ ] **5.2** Queue table columns: Item (title + TCIN), Submitted MAP, Market price, Delta / Delta%, Flags (pills), Status, Submitted date. Row click opens detail panel.
-- [ ] **5.3** Detail panel: policy document link (mock), metadata summary, attestations, Comp Intel comparison + flag pills and severity, comment box (required for Request changes / Not accept), actions: **Accept** | **Request changes** | **Not accept**.
-- [ ] **5.4** Wire actions: Accept → status ACCEPTED, eligibleForGuardrail true; Request changes → CHANGES_REQUESTED, persist reviewerComment; Not accept → NOT_ACCEPTED, persist reviewerComment. Vendor view shows updated status and reviewer comment when CHANGES_REQUESTED or NOT_ACCEPTED.
-- [ ] **5.5** Expiration: when today > submission metadata expirationDate, treat or set status EXPIRED; eligibleForGuardrail false (e.g. on read or on open of reviewer queue).
+- [x] **5.1** Route `/itemhub/review` (or header "View as: Vendor | Target Reviewer" toggle). Reviewer view: queue of MAP submissions.
+- [x] **5.2** Queue table columns: Item (title + TCIN), Submitted MAP, Market price, Delta / Delta%, Flags (pills), Status, Submitted date. Row click opens detail panel.
+- [x] **5.3** Detail panel: policy document link (mock), metadata summary, attestations, **Comp Intel live data and flags** (market price, submitted MAP, delta, delta%, timestamp, confidence; flag pills MAP_ABOVE_MARKET, MAP_NEAR_MARKET, COMP_INTEL_STALE with severity), comment box (required for Request changes / Not accept), actions: **Accept** | **Request changes** | **Not accept**.
+- [x] **5.4** Wire actions: Accept → status ACCEPTED, eligibleForGuardrail true; Request changes → CHANGES_REQUESTED, persist reviewerComment; Not accept → NOT_ACCEPTED, persist reviewerComment. Vendor view shows updated status and reviewer comment when CHANGES_REQUESTED or NOT_ACCEPTED.
+- [x] **5.5** Expiration: when today > submission metadata expirationDate, treat or set status EXPIRED; eligibleForGuardrail false (e.g. on read or on open of reviewer queue).
 
-**Parallel:** 5.1–5.2 and 5.3 can be split; 5.4–5.5 depend on 5.3. Phase 5 can run in parallel with Phase 4.
+**Note:** Comp Intel and respective flags live in the reviewer console only; the vendor does not see a "Behind the scenes" drawer or live comp example.
 
 ---
 
@@ -104,7 +114,7 @@ Feature-driven order. Tasks marked **[PARALLEL]** can be executed in parallel wi
 
 - [ ] **7.1** Page matches ItemHub Update Item / Pricing layout; vendor context and MAP optional + gated messaging explicit.
 - [ ] **7.2** MAP optional and gated by "MAP applies" radio; policy + metadata + attestations required only when MAP applies; Submit creates review state and merchant flags when comp conditions hit.
-- [ ] **7.3** "Behind the scenes" drawer shows dynamic explanation and live calculation; reviewer console Accept / Request changes / Not accept reflect in vendor view; guardrail eligibility only true when Accepted.
+- [ ] **7.3** Reviewer console shows Comp Intel and flags; Accept / Request changes / Not accept reflect in vendor view; guardrail eligibility only true when Accepted.
 - [ ] **7.4** Seed scenarios: MAP 180 vs 185 no flag; MAP 190 vs 188 near-market flag; MAP 210 vs 185 above-market flag; Item C stale warning.
 
 ---
@@ -116,5 +126,5 @@ Feature-driven order. Tasks marked **[PARALLEL]** can be executed in parallel wi
 | 0 | 1.1, 1.2, 1.3 (shell pieces); 1.4, 1.5 after layout |
 | 1 | 2.1, 2.2 then 2.3, 2.4 |
 | 2 | 3.1–3.3 (MAP block UI) and 3.4–3.5 (state + validations); then 3.6 |
-| 3 | **Phase 4 (drawer)** and **Phase 5 (reviewer console)** |
-| 4, 5 | 6.1, 6.2, 6.3 (polish) |
+| 3 | **Phase 5 (reviewer console)** — Phase 4 cancelled; comp intel in reviewer only |
+| 5 | 6.1, 6.2, 6.3 (polish) |

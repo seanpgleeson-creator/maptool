@@ -139,27 +139,27 @@ Use the **existing** Pricing card layout (Section 0.4). Do not change the card c
 - Effective date (date)
 - Expiration / review date (date)
 - Covered products (select: this item only | brand | category | all products)
-- Covered channels (multiselect: online | in-store | marketplace | other)
+- **No covered channels field** — universal channel enforcement is part of MAP policy validity (policy not valid if there are channel limitations); this is covered in attestations (uniform enforcement with no channel exceptions).
 - Enforcement mechanism (select: notice+cure | immediate | tiered | other)
 - Cure period (number, days) — show only if mechanism includes cure
 - Enforcement contact (name, email)
 
 ### 4.3 Attestations (all required when MAP applies)
 
-Checkboxes; all must be checked to submit:
+Checkboxes; all three must be checked to submit:
 
-- Policy is specific (products/channels/terms clearly defined)
-- Uniformly enforced with no retailer/segment exceptions
+- Policy is specific (products/terms clearly defined) — channels do not need to be specific.
+- Uniformly enforced with no retailer segment or channel exceptions
 - Actively enforced (not dormant)
-- Target prices independently (no coordination; anti-collusion clarity)
+
+*(No attestation for "Target prices independently.")*
 
 ### 4.4 Vendor-facing copy (must appear on Screen A)
 
 Place above or near attestations:
 
 - *"MAP is optional. If you provide a MAP value, you must upload a MAP policy that is specific and uniformly enforced with no exceptions."*
-- *"Target sets resale prices independently. Submissions are reviewed and may be considered as an input, but Target does not coordinate resale pricing with vendors or other retailers."*
-- *"MAP submissions are not automatically applied. Only accepted submissions are eligible to be considered as a pricing guardrail."*
+- *"MAP prices are not automatically used as a guardrail for price decisions. Price decisions are at the sole discretion of Target Corporation."*
 
 ---
 
@@ -188,30 +188,10 @@ When MAP applies = Yes:
 
 ---
 
-## 6. "Behind the scenes" explainer (vendor education)
+## 6. Comp Intel and vendor — no "Behind the scenes" drawer
 
-- **Trigger:** Info button "How Target reviews MAP" next to MAP section title.
-- **Presentation:** Right-side **drawer** (preferred) or modal.
-
-**Drawer content (dynamic to current item):**
-
-1. **What happens when you submit MAP**
-   - We validate required fields (policy, metadata, attestations).
-   - We compare MAP to internal market observations (Comp Intel).
-   - If MAP is above or very close to observed market price, we create an internal flag for merchant review.
-2. **How MAP may be used**
-   - MAP is not automatically applied.
-   - Only accepted submissions are eligible to be considered as a pricing guardrail.
-   - Target sets resale prices independently; your submission does not guarantee Target pricing.
-3. **What may cause follow-up**
-   - MAP near/above market
-   - Policy missing key dates or enforcement details
-   - Stale market data (we may request clarification)
-4. **Example calculation (live)**
-   - Market Price: $X
-   - Submitted MAP: $Y
-   - Delta: $Y − $X
-   - Flag status (if any): MAP_NEAR_MARKET | MAP_ABOVE_MARKET | COMP_INTEL_STALE
+- **Vendor:** Does **not** need additional information; no info button or drawer on the Update Item screen.
+- **Comp Intel and live example:** Available to the **reviewer only**, in the Reviewer console (queue and detail panel). Show market price, submitted MAP, delta, delta%, timestamp, confidence, and flag pills (MAP_NEAR_MARKET, MAP_ABOVE_MARKET, COMP_INTEL_STALE) with severity there.
 
 ---
 
@@ -239,7 +219,7 @@ Row click → opens submission detail panel.
 - Policy document link (mock)
 - Metadata summary
 - Attestations
-- Comp Intel comparison + flag pills (MAP_ABOVE_MARKET, MAP_NEAR_MARKET, COMP_INTEL_STALE) and severity
+- **Comp Intel live data and flags** (market price, submitted MAP, delta, delta%, timestamp, confidence; flag pills MAP_ABOVE_MARKET, MAP_NEAR_MARKET, COMP_INTEL_STALE and severity) — Comp Intel and flags live in the reviewer console only.
 - **Comment box** (required for "Request changes" and "Not accept")
 - **Actions:** Accept | Request changes | Not accept
 
@@ -287,8 +267,7 @@ Spacing: card padding 16–24px; inputs in grid (e.g. MSRP left, MAP right).
 |--------|--------|
 | Vendor context | "You are signed in as a Vendor user submitting item attributes and pricing information to Target." |
 | MAP helper | "MAP is optional. If you provide a MAP value, you must upload a MAP policy that is specific and uniformly enforced with no exceptions." |
-| Target independence | "Target sets resale prices independently. Submissions are reviewed and may be considered as an input, but Target does not coordinate resale pricing with vendors or other retailers." |
-| Guardrail eligibility | "MAP submissions are not automatically applied. Only accepted submissions are eligible to be considered as a pricing guardrail." |
+| Guardrail / price discretion | "MAP prices are not automatically used as a guardrail for price decisions. Price decisions are at the sole discretion of Target Corporation." |
 | Submission banner | "Your MAP submission will be reviewed by Target. We may request clarification before it can be used." |
 | Comp note (optional) | "Your MAP is close to current market observations. Target may follow up during review." |
 | MAP > MSRP error | "MAP cannot exceed MSRP." |
@@ -301,6 +280,6 @@ Spacing: card padding 16–24px; inputs in grid (e.g. MSRP left, MAP right).
 1. **Vendor identity** and **MAP optional + gated** messaging everywhere relevant.
 2. **Single pricing card** with Apply-to-all vs Edit-each-item and per-row MAP block (status, radio, policy upload, metadata, attestations, CTAs).
 3. **Validations:** block Submit only on missing required data or MAP > MSRP; comp flags = warnings only.
-4. **"Behind the scenes"** drawer with fixed copy + live example (market, MAP, delta, flag).
-5. **Reviewer console** with queue table, detail panel, comment (for request changes / not accept), and Accept / Request changes / Not accept.
+4. **No vendor drawer** — Comp Intel and live example are **reviewer-only** (Reviewer console).
+5. **Reviewer console** with queue table, detail panel, **Comp Intel + flags**, comment (for request changes / not accept), and Accept / Request changes / Not accept.
 6. **Status badges** and clear lifecycle so vendor understands Draft → Submitted → Under review → outcome.

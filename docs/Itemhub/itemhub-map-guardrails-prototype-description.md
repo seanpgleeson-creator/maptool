@@ -133,23 +133,22 @@ Controls:
 - Effective date (date)
 - Expiration / review date (date)
 - Covered products (select: this item only / brand / category / all products)
-- Covered channels (multiselect: online / in-store / marketplace / other)
+- **No covered channels** — universal channel enforcement is part of MAP policy validity; covered in attestations (uniform, no channel exceptions).
 - Enforcement mechanism (select: notice+cure / immediate / tiered / other)
 - Cure period (number days; show only if mechanism includes cure)
 - Enforcement contact (name, email)
 
 ### 4.3 Required Attestations (All required if MAP applies)
-Checkboxes:
-- Specific policy (products/channels/terms clearly defined)
-- Uniformly enforced with no retailer/segment exceptions
+Checkboxes (three):
+- Policy is specific (products/terms clearly defined) — channels do not need to be specific.
+- Uniformly enforced with no retailer segment or channel exceptions
 - Actively enforced (not dormant)
-- Target prices independently (no coordination; anti-collusion clarity)
+*(No attestation for "Target prices independently.")*
 
 ### 4.4 Vendor-Facing Copy (Must include, visible on Screen A)
 Inline text above attestations:
 - “MAP is optional. If you provide a MAP value, you must upload a MAP policy that is specific and uniformly enforced with no exceptions.”
-- “Target sets resale prices independently. Submissions are reviewed and may be considered as an input, but Target does not coordinate resale pricing with vendors or other retailers.”
-- “MAP submissions are not automatically applied. Only accepted submissions are eligible to be considered as a pricing guardrail.”
+- “MAP prices are not automatically used as a guardrail for price decisions. Price decisions are at the sole discretion of Target Corporation.”
 
 ---
 
@@ -208,34 +207,13 @@ Vendor:
 
 ---
 
-## 7) “Behind the Scenes” Explainer (Vendor Education & Transparency)
-Add an **Info button** “How Target reviews MAP” next to the MAP section title.
-Click opens a **right-side drawer** (preferred) OR modal.
+## 7) Comp Intel — Reviewer Only (No Vendor Drawer)
+The vendor does **not** need additional information; no "Behind the scenes" info button or drawer on the Update Item screen.
 
-This drawer must explicitly help the vendor understand:
-- They are submitting data as a vendor
-- Target reviews MAP to prevent downstream pricing issues
-- Target uses Comp Intel to identify risk
-- Only accepted MAP becomes eligible to influence guardrails
-
-Drawer contents (dynamic to current item values):
-1) **What happens when you submit MAP**
-   - “We validate required fields (policy, metadata, attestations).”
-   - “We compare MAP to internal market observations (Comp Intel).”
-   - “If MAP is above or very close to observed market price, we create an internal flag for merchant review.”
-2) **How MAP may be used**
-   - “MAP is not automatically applied.”
-   - “Only accepted submissions are eligible to be considered as a pricing guardrail.”
-   - “Target sets resale prices independently; your submission does not guarantee Target pricing.”
-3) **What may cause follow-up**
-   - “MAP near/above market”
-   - “Policy missing key dates or enforcement details”
-   - “Stale market data (we may request clarification)”
-4) **Example calculation (live)**
-   - Market Price: $X
-   - Submitted MAP: $Y
-   - Delta: $Y - $X
-   - Flag status (if triggered): MAP_NEAR_MARKET / MAP_ABOVE_MARKET / COMP_INTEL_STALE
+**Comp Intel and live example** are available to the **reviewer only**, in the Reviewer console:
+- In the queue and submission detail panel: show market price, submitted MAP, delta, delta%, timestamp, confidence.
+- Flag pills and severity (MAP_NEAR_MARKET, MAP_ABOVE_MARKET, COMP_INTEL_STALE).
+- This is where the "live" comp intel data and flags live — not in a vendor-facing drawer.
 
 ---
 
@@ -354,7 +332,7 @@ Demonstrate:
 - MAP is optional and gated by “MAP applies” radio.
 - Policy upload + metadata + attestations required only when MAP applies.
 - Submit triggers Target review state and creates merchant flags when comp conditions hit.
-- Vendor can open “Behind the scenes” drawer showing dynamic explanation + calculation.
+- Reviewer console shows Comp Intel and flags (market price, MAP, delta, flag status).
 - Reviewer console can accept/request changes/not accept and status updates reflect back in vendor view.
 - Guardrail eligibility only true when Accepted.
 
@@ -376,8 +354,7 @@ Demonstrate:
 
 ### MAP helper copy (vendor)
 - “MAP is optional. If you provide a MAP value, you must upload a MAP policy that is specific and uniformly enforced with no exceptions.”
-- “Target sets resale prices independently. Submissions are reviewed and may be considered as an input, but Target does not coordinate resale pricing with vendors or other retailers.”
-- “MAP submissions are not automatically applied. Only accepted submissions are eligible to be considered as a pricing guardrail.”
+- “MAP prices are not automatically used as a guardrail for price decisions. Price decisions are at the sole discretion of Target Corporation.”
 
 ### Submission banner (vendor)
 - “Your MAP submission will be reviewed by Target. We may request clarification before it can be used.”

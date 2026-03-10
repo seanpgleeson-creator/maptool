@@ -44,8 +44,8 @@ Vendor identity and context must be explicit in the UI (e.g. banner or line near
 ### In scope
 
 - **Screen A — Update Item → Pricing (vendor view):** Modify the existing ItemHub Update Item / Pricing screen. Replace the single MAP input with a **MAP block** per item row: status badge, "Does MAP apply?" (No/Yes), and when Yes: MAP value, policy upload, policy metadata, attestations, Save Draft / Submit for Target review. Keep existing shell: top bar, left nav, Attribute Groups list, Pricing card, "Apply to all items / Edit each item" toggle.
-- **Screen B — Reviewer console (internal view):** A separate route or "View as: Vendor | Target Reviewer" toggle. Queue of MAP submissions, competitive price flags (Comp Intel), submission detail with policy + metadata + attestations + actions: Accept / Request changes / Not accept (with required comment for the latter two).
-- **Vendor education:** "How Target reviews MAP" info control opening a right-side drawer with explanation and live Comp Intel example (market price, MAP, delta, flag status).
+- **Screen B — Reviewer console (internal view):** A separate route or "View as: Vendor | Target Reviewer" toggle. Queue of MAP submissions; **Comp Intel and flags live in the reviewer console only** (market price, submitted MAP, delta, delta%, timestamp, confidence; flag pills and severity). Submission detail with policy + metadata + attestations + Comp Intel comparison + actions: Accept / Request changes / Not accept (with required comment for the latter two).
+- **No vendor drawer:** The vendor does not need additional information; there is no "Behind the scenes" info button or drawer. Comp Intel and live example are reviewer-only.
 - **Guardrail eligibility:** Only ACCEPTED submissions set `eligibleForGuardrail = true`; all other statuses do not.
 
 ### Prototype constraints
@@ -61,12 +61,12 @@ Vendor identity and context must be explicit in the UI (e.g. banner or line near
 
 | Area | Requirement |
 |------|-------------|
-| **MAP optional and gated** | MAP is optional. When "MAP applies" = Yes, vendor must provide: MAP value, policy upload (PDF/DOC/DOCX), policy metadata (effective/expiration date, covered products/channels, enforcement mechanism, contact), and all four attestations. |
+| **MAP optional and gated** | MAP is optional. When "MAP applies" = Yes, vendor must provide: MAP value, policy upload (PDF/DOC/DOCX), policy metadata (effective/expiration date, covered products, enforcement mechanism, contact; **no covered channels** — universal enforcement is covered in attestations), and **three** attestations (specific, uniform, enforced). |
 | **Target review workflow** | Status lifecycle: Not provided → Draft → Submitted → Under review → Accepted / Changes requested / Not accepted / Expired. Only reviewer can move from Under review to Accepted, Request changes, or Not accept. Request changes and Not accept require a reviewer comment. |
 | **Guardrail eligibility** | Only status **ACCEPTED** sets `eligibleForGuardrail = true`. All other statuses must have `eligibleForGuardrail = false`. |
 | **Validations** | When MAP applies: block Submit if MAP value missing, policy missing, any required metadata or attestation missing, or **MAP > MSRP** (show error: "MAP cannot exceed MSRP."). Comp Intel conditions (MAP above/near market, stale data) do **not** block submission; they create internal flags for reviewer and may show neutral vendor messaging. |
 | **Comp Intel and flags** | On submit, evaluate item's mock Comp Intel vs submitted MAP. Create merchant flags when: MAP > market (MAP_ABOVE_MARKET), MAP within 5% above market (MAP_NEAR_MARKET), or market data older than 14 days (COMP_INTEL_STALE). Flags are for reviewer visibility; vendor sees neutral submission message and optional note if near/above market. |
-| **Vendor copy** | Required vendor-facing copy (policy requirement, Target independence, guardrail eligibility) must appear in UI; exact strings are in the spec and UI findings docs. |
+| **Vendor copy** | Required vendor-facing copy: policy requirement; guardrail/price discretion ("MAP prices are not automatically used as a guardrail for price decisions. Price decisions are at the sole discretion of Target Corporation."). No "Target sets resale prices independently" line. |
 
 ---
 
@@ -78,8 +78,7 @@ The prototype is done when:
 - Vendor context and MAP optional + gated messaging are explicit in the UI.
 - MAP is optional and gated by "MAP applies" radio; policy upload, metadata, and attestations are required only when MAP applies.
 - Submit triggers Target review state and creates merchant flags when Comp Intel conditions are met.
-- Vendor can open the "Behind the scenes" drawer with dynamic explanation and live calculation (market price, MAP, delta, flag).
-- Reviewer console can Accept / Request changes / Not accept; status and comments reflect back in the vendor view.
+- Reviewer console shows Comp Intel (market price, MAP, delta, flags) and can Accept / Request changes / Not accept; status and comments reflect back in the vendor view.
 - Guardrail eligibility is true only when status is Accepted.
 
 ---

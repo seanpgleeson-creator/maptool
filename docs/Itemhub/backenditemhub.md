@@ -36,9 +36,9 @@ The backend must enforce status transitions, store reviewer decisions and commen
 - `mapValue` (number, currency)
 - `policyFileName` (string; prototype can mock file upload)
 - **metadata:**  
-  `effectiveDate`, `expirationDate`, `coveredProducts`, `coveredChannels[]`, `enforcementMechanism`, `cureDays?`, `contactName`, `contactEmail`
+  `effectiveDate`, `expirationDate`, `coveredProducts`, `coveredChannels[]` (optional/empty in UI — universal channel enforcement is covered in attestations), `enforcementMechanism`, `cureDays?`, `contactName`, `contactEmail`
 - **attestations:**  
-  `{ specific, uniform, enforced, independentPricing }` (booleans)
+  `{ specific, uniform, enforced, independentPricing }` (booleans; **three required in UI**: specific, uniform, enforced — no "Target prices independently" checkbox)
 - `status` (enum; see state machine)
 - `reviewerComment?` (required when status is CHANGES_REQUESTED or NOT_ACCEPTED)
 - `eligibleForGuardrail` (derived: true only when status = ACCEPTED)
