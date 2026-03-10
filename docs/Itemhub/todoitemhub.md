@@ -23,11 +23,11 @@ Feature-driven order. Tasks marked **[PARALLEL]** can be executed in parallel wi
 
 *Single feature: full layout so the Pricing card has a home.*
 
-- [ ] **1.1** Top bar: ItemHub logo/wordmark left, center "Q Search", right help icon, bell icon, vendor avatar + name (e.g. "John Doe").
-- [ ] **1.2** Left nav: Home, **My Items** (selected), My Tasks, Item Health. Selected state on My Items (e.g. subtle gray + indicator).
-- [ ] **1.3** Main content top: breadcrumb "My Items / Update Item", page title "Update Item", "3 items selected" link, orange "20 attributes need attention across 2 attribute groups.", content "Q Search", "Smart Fill with AI" (primary), "Bulk edit" (secondary).
-- [ ] **1.4** Two-column area: left = Attribute Groups (title + circular progress e.g. 40%), list Basic Details, Media, Content, **Pricing** (selected, 100% bar); right = placeholder for Pricing card. Use Tailwind: bg-slate-50, white cards, border-slate-200, blue primary, orange for needs attention.
-- [ ] **1.5** Vendor context: banner or line near page title — "You are signed in as a Vendor user submitting item attributes and pricing information to Target."
+- [x] **1.1** Top bar: ItemHub logo/wordmark left, center "Q Search", right help icon, bell icon, vendor avatar + name (e.g. "John Doe").
+- [x] **1.2** Left nav: Home, **My Items** (selected), My Tasks, Item Health. Selected state on My Items (e.g. subtle gray + indicator).
+- [x] **1.3** Main content top: breadcrumb "My Items / Update Item", page title "Update Item", "3 items selected" link, orange "20 attributes need attention across 2 attribute groups.", content "Q Search", "Smart Fill with AI" (primary), "Bulk edit" (secondary).
+- [x] **1.4** Two-column area: left = Attribute Groups (title + circular progress e.g. 40%), list Basic Details, Media, Content, **Pricing** (selected, 100% bar); right = placeholder for Pricing card. Use Tailwind: bg-slate-50, white cards, border-slate-200, blue primary, orange for needs attention.
+- [x] **1.5** Vendor context: banner or line near page title — "You are signed in as a Vendor user submitting item attributes and pricing information to Target."
 
 **Parallel:** 1.1, 1.2, 1.3 can be built in parallel; 1.4 and 1.5 can follow or run with 1.1–1.3 once layout structure exists.
 
