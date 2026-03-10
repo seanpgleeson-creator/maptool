@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react'
 import { useItemHub } from '@/lib/itemhub/ItemHubProvider'
 import type { MAPSubmission, Item } from '@/lib/itemhub/types'
-import { ReviewerConsoleUI, getEffectiveStatus } from './ReviewerConsoleUI'
+import { ReviewerConsoleUI, setReviewerConsoleUIProps, getEffectiveStatus } from './ReviewerConsoleUI'
 
 export function ReviewerConsole() {
   const { state, reviewerAccept, reviewerRequestChanges, reviewerNotAccept, getFlagsForSubmission } = useItemHub()
@@ -49,7 +49,7 @@ export function ReviewerConsole() {
     setComment('')
   }
 
-  return React.createElement(ReviewerConsoleUI, {
+  setReviewerConsoleUIProps({
     queue,
     selectedItemId,
     selected,
@@ -65,4 +65,5 @@ export function ReviewerConsole() {
     onNotAccept: handleNotAccept,
     getFlagsForSubmission,
   })
+  return React.createElement(ReviewerConsoleUI)
 }

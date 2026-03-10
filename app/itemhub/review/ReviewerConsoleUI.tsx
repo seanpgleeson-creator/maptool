@@ -280,5 +280,4 @@ function ReviewerConsoleContent() {
     </section>
 }
 
-export const ReviewerConsoleUI = (props: ReviewerConsoleUIProps) =>
-  React.createElement(ReviewerConsoleContent, props)
+export { ReviewerConsoleContent as ReviewerConsoleUI }
