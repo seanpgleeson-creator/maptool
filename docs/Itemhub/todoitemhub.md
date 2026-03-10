@@ -10,10 +10,10 @@ Feature-driven order. Tasks marked **[PARALLEL]** can be executed in parallel wi
 
 *Nothing depends on this; everything else does.*
 
-- [ ] **0.1** Define TypeScript types in `lib/itemhub/`: `Item` (with `compIntel`), `MAPSubmission` (metadata, attestations, status, reviewerComment, eligibleForGuardrail), `MerchantFlag`, `CompIntel`. Enums for status, flag type, severity.
-- [ ] **0.2** Create in-memory store (Zustand or Context) in `lib/itemhub/`: hold items, MAP submissions by itemId, merchant flags. Single place for status transitions and eligibility rule (`eligibleForGuardrail` only when status = ACCEPTED).
-- [ ] **0.3** Add seed data: 3 items per spec (Item A: MSRP 290, market 185 high; Item B: MSRP 280, market 188 med; Item C: MSRP 120, market 110 low, **stale**). Include tcin, upc, dpci, title, thumbnailUrl, initialRetailPrice, compIntel (marketPrice, marketTimestamp, confidence).
-- [ ] **0.4** Routes: ensure `/itemhub` (Update Item) and `/itemhub/review` (Reviewer) exist and render a minimal shell so navigation works.
+- [x] **0.1** Define TypeScript types in `lib/itemhub/`: `Item` (with `compIntel`), `MAPSubmission` (metadata, attestations, status, reviewerComment, eligibleForGuardrail), `MerchantFlag`, `CompIntel`. Enums for status, flag type, severity.
+- [x] **0.2** Create in-memory store (Zustand or Context) in `lib/itemhub/`: hold items, MAP submissions by itemId, merchant flags. Single place for status transitions and eligibility rule (`eligibleForGuardrail` only when status = ACCEPTED).
+- [x] **0.3** Add seed data: 3 items per spec (Item A: MSRP 290, market 185 high; Item B: MSRP 280, market 188 med; Item C: MSRP 120, market 110 low, **stale**). Include tcin, upc, dpci, title, thumbnailUrl, initialRetailPrice, compIntel (marketPrice, marketTimestamp, confidence).
+- [x] **0.4** Routes: ensure `/itemhub` (Update Item) and `/itemhub/review` (Reviewer) exist and render a minimal shell so navigation works.
 
 **Parallel:** 0.1 and 0.3 can be done together (types first, then seed data conforming to types). 0.2 depends on 0.1. 0.4 can start once 0.1 exists (no store needed for empty routes).
 
