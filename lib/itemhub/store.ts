@@ -99,9 +99,67 @@ export function getInitialState(): ItemHubState {
   }
 }
 
+const emptyMetadata = {
+  effectiveDate: '',
+  expirationDate: '',
+  coveredProducts: 'this_item_only' as const,
+  coveredChannels: [] as const,
+  enforcementMechanism: 'notice_cure' as const,
+  contactName: '',
+  contactEmail: '',
+}
+
+const emptyAttestations = {
+  specific: false,
+  uniform: false,
+  enforced: false,
+  independentPricing: false,
+}
+
+/** Create a NOT_PROVIDED submission (MAP does not apply). */
+export function createNotProvidedSubmission(itemId: string): MAPSubmission {
+  const nowStr = now()
+  return {
+    id: `sub-${itemId}`,
+    itemId,
+    mapApplies: false,
+    mapValue: null,
+    policyFileName: null,
+    metadata: null,
+    attestations: null,
+    status: 'NOT_PROVIDED',
+    reviewerComment: null,
+    eligibleForGuardrail: false,
+    createdAt: nowStr,
+    updatedAt: nowStr,
+    submittedAt: null,
+  }
+}
+
+/** Create a blank DRAFT submission (MAP applies, user will fill form). */
+export function createDraftSubmission(itemId: string): MAPSubmission {
+  const nowStr = now()
+  return {
+    id: `sub-${itemId}`,
+    itemId,
+    mapApplies: true,
+    mapValue: null,
+    policyFileName: null,
+    metadata: { ...emptyMetadata },
+    attestations: { ...emptyAttestations },
+    status: 'DRAFT',
+    reviewerComment: null,
+    eligibleForGuardrail: false,
+    createdAt: nowStr,
+    updatedAt: nowStr,
+    submittedAt: null,
+  }
+}
+
 export type ItemHubAction =
   | { type: 'INIT'; payload: ItemHubState }
   | { type: 'SET_SUBMISSION'; payload: { itemId: string; submission: MAPSubmission } }
+  | { type: 'UPDATE_ITEM_MSRP'; payload: { itemId: string; msrp: number } }
   | {
       type: 'SUBMIT_FOR_REVIEW'
       payload: { itemId: string }
@@ -126,11 +184,20 @@ export function itemHubReducer(state: ItemHubState, action: ItemHubAction): Item
       return { ...state, submissions: next }
     }
 
+    case 'UPDATE_ITEM_MSRP': {
+      const { itemId, msrp } = action.payload
+      const nextItems = state.items.map((i) =>
+        i.id === itemId ? { ...i, msrp } : i
+      )
+      return { ...state, items: nextItems }
+    }
+
     case 'SUBMIT_FOR_REVIEW': {
       const { itemId } = action.payload
       const submission = state.submissions[itemId]
       const item = state.items.find((i) => i.id === itemId)
-      if (!submission || submission.status !== 'DRAFT' || !item) return state
+      const canSubmit = submission?.status === 'DRAFT' || submission?.status === 'CHANGES_REQUESTED'
+      if (!submission || !canSubmit || !item) return state
 
       const updated: MAPSubmission = {
         ...submission,

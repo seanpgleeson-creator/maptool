@@ -37,10 +37,10 @@ Feature-driven order. Tasks marked **[PARALLEL]** can be executed in parallel wi
 
 *Feature: existing Pricing experience so we can drop in the MAP block next.*
 
-- [ ] **2.1** Pricing card: header "Pricing", subtitle "Provide attributes such as MSRP and MAP.", "03 Items" (or dynamic count) with expand/collapse arrow.
-- [ ] **2.2** Toggle: "Apply to all items" (default inactive) | "Edit each item" (active). Same row as item count.
-- [ ] **2.3** Item rows (from store): thumbnail, product title, TCIN/UPC/DPCI, status tag (e.g. PENDING SETUP), Initial Retail Price (read-only), **MSRP (in $)\*** input. Bind MSRP to store.
-- [ ] **2.4** Item navigation: "<", ">", refresh/undo when multiple items; show one item at a time in "Edit each item" or all in "Apply to all" (spec: apply-to-all can use same row pattern repeated).
+- [x] **2.1** Pricing card: header "Pricing", subtitle "Provide attributes such as MSRP and MAP.", "03 Items" (or dynamic count) with expand/collapse arrow.
+- [x] **2.2** Toggle: "Apply to all items" (default inactive) | "Edit each item" (active). Same row as item count.
+- [x] **2.3** Item rows (from store): thumbnail, product title, TCIN/UPC/DPCI, status tag (e.g. PENDING SETUP), Initial Retail Price (read-only), **MSRP (in $)\*** input. Bind MSRP to store.
+- [x] **2.4** Item navigation: "<", ">", refresh/undo when multiple items; show one item at a time in "Edit each item" or all in "Apply to all" (spec: apply-to-all can use same row pattern repeated).
 
 **Parallel:** 2.1 and 2.2 are independent; 2.3 and 2.4 depend on 2.1/2.2. 2.3 and 2.4 can be done in parallel once the card and toggle exist.
 
@@ -50,12 +50,12 @@ Feature-driven order. Tasks marked **[PARALLEL]** can be executed in parallel wi
 
 *Feature: optional MAP, policy + metadata + attestations, Save Draft / Submit, state machine, validations.*
 
-- [ ] **3.1** In each item row, **replace** single MAP input with **MAP section**: block title "Minimum Advertised Price (MAP)", status badge (Not provided | Draft | Submitted | Under review | Accepted | Changes requested | Not accepted | Expired), inline helper "MAP is optional. If provided, a specific, uniformly enforced policy is required and will be reviewed by Target."
-- [ ] **3.2** "Does a MAP policy apply to this item?" — Radio **No** (default) | **Yes**. When Yes: MAP currency input, Upload MAP policy (mock: store filename), policy metadata form (effective date, expiration date, covered products, covered channels, enforcement mechanism, cure days if applicable, enforcement contact name/email), four attestation checkboxes, CTA row "Save Draft" | "Submit for Target review".
-- [ ] **3.3** Required vendor copy above or near attestations (all three strings from spec §15 / uiitemhub §12).
-- [ ] **3.4** State machine in store: NOT_PROVIDED → DRAFT (select Yes); DRAFT → SUBMITTED (Submit); SUBMITTED → UNDER_REVIEW (immediate in prototype). Enforce eligibility: only ACCEPTED → eligibleForGuardrail = true.
-- [ ] **3.5** Validations: when MAP applies, disable Submit until mapValue present, policy file present, all required metadata and all four attestations complete; and enforce MAP ≤ MSRP (show "MAP cannot exceed MSRP." if violated). Non-blocking: do not block on comp flags or stale data.
-- [ ] **3.6** On Submit: create MerchantFlag(s) when MAP_ABOVE_MARKET, MAP_NEAR_MARKET (5%), or COMP_INTEL_STALE (marketTimestamp > 14 days). Expose flags in store for reviewer; vendor sees neutral submission banner ("Your MAP submission will be reviewed by Target…") and optional note if near/above market.
+- [x] **3.1** In each item row, **replace** single MAP input with **MAP section**: block title "Minimum Advertised Price (MAP)", status badge (Not provided | Draft | Submitted | Under review | Accepted | Changes requested | Not accepted | Expired), inline helper "MAP is optional. If provided, a specific, uniformly enforced policy is required and will be reviewed by Target."
+- [x] **3.2** "Does a MAP policy apply to this item?" — Radio **No** (default) | **Yes**. When Yes: MAP currency input, Upload MAP policy (mock: store filename), policy metadata form (effective date, expiration date, covered products, covered channels, enforcement mechanism, cure days if applicable, enforcement contact name/email), four attestation checkboxes, CTA row "Save Draft" | "Submit for Target review".
+- [x] **3.3** Required vendor copy above or near attestations (all three strings from spec §15 / uiitemhub §12).
+- [x] **3.4** State machine in store: NOT_PROVIDED → DRAFT (select Yes); DRAFT → SUBMITTED (Submit); SUBMITTED → UNDER_REVIEW (immediate in prototype). Enforce eligibility: only ACCEPTED → eligibleForGuardrail = true.
+- [x] **3.5** Validations: when MAP applies, disable Submit until mapValue present, policy file present, all required metadata and all four attestations complete; and enforce MAP ≤ MSRP (show "MAP cannot exceed MSRP." if violated). Non-blocking: do not block on comp flags or stale data.
+- [x] **3.6** On Submit: create MerchantFlag(s) when MAP_ABOVE_MARKET, MAP_NEAR_MARKET (5%), or COMP_INTEL_STALE (marketTimestamp > 14 days). Expose flags in store for reviewer; vendor sees neutral submission banner ("Your MAP submission will be reviewed by Target…") and optional note if near/above market.
 
 **Parallel:** 3.1–3.3 (MAP block UI) can be built in parallel with 3.4–3.5 (state machine + validations in lib/itemhub) if two streams; then 3.6 (flag creation on submit) after 3.4 is done.
 

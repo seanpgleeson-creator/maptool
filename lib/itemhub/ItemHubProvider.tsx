@@ -41,6 +41,13 @@ export function useItemHub() {
     [dispatch]
   )
 
+  const setItemMsrp = useCallback(
+    (itemId: string, msrp: number) => {
+      dispatch({ type: 'UPDATE_ITEM_MSRP', payload: { itemId, msrp } })
+    },
+    [dispatch]
+  )
+
   const submitForReview = useCallback(
     (itemId: string) => {
       dispatch({ type: 'SUBMIT_FOR_REVIEW', payload: { itemId } })
@@ -90,6 +97,7 @@ export function useItemHub() {
       state,
       dispatch,
       setSubmission,
+      setItemMsrp,
       submitForReview,
       reviewerAccept,
       reviewerRequestChanges,
@@ -100,6 +108,7 @@ export function useItemHub() {
     [
       state,
       setSubmission,
+      setItemMsrp,
       submitForReview,
       reviewerAccept,
       reviewerRequestChanges,
