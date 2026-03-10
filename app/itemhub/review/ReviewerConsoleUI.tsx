@@ -74,7 +74,12 @@ export type ReviewerConsoleUIProps = {
   getFlagsForSubmission: (id: string) => MerchantFlag[]
 }
 
-function ReviewerConsoleContent(props: any) {
+let _props: ReviewerConsoleUIProps | null = null
+export function setReviewerConsoleUIProps(p: ReviewerConsoleUIProps) {
+  _props = p
+}
+
+function ReviewerConsoleContent() {
   return <section style={styles.layout}>
       <div style={styles.header}>
         <h1 style={styles.title}>Reviewer Console</h1>
@@ -99,15 +104,15 @@ function ReviewerConsoleContent(props: any) {
             </tr>
           </thead>
           <tbody>
-            {props.queue.length === 0 ? (
+            {_props!.queue.length === 0 ? (
               <tr>
                 <td colSpan={7} style={{ ...styles.td, ...styles.empty }}>
-                  No MAP submissions in props.queue. Submit from the vendor Update Item view.
+                  No MAP submissions in _props!.queue. Submit from the vendor Update Item view.
                 </td>
               </tr>
             ) : (
-              props.queue.map(({ submission, item }) => {
-                const flags = props.getFlagsForSubmission(submission.id)
+              _props!.queue.map(({ submission, item }) => {
+                const flags = _props!.getFlagsForSubmission(submission.id)
                 const mapVal = submission.mapValue ?? 0
                 const market = item.compIntel.marketPrice
                 const delta = mapVal - market
@@ -116,12 +121,12 @@ function ReviewerConsoleContent(props: any) {
                 const submittedAt = submission.submittedAt
                   ? new Date(submission.submittedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
                   : '—'
-                const isSelected = props.selectedItemId === item.id
+                const isSelected = _props!.selectedItemId === item.id
                 return (
                   <tr
                     key={submission.id}
                     style={{ ...styles.trClick, ...(isSelected ? styles.trSelected : {}) }}
-                    onClick={() => props.setSelectedItemId(item.id)}
+                    onClick={() => _props!.setSelectedItemId(item.id)}
                   >
                     <td style={styles.td}>
                       <div style={{ fontWeight: 500 }}>{item.title}</div>
@@ -156,16 +161,16 @@ function ReviewerConsoleContent(props: any) {
         </table>
       </div>
 
-      {props.selected ? <div style={styles.detail}>
+      {_props!.selected ? <div style={styles.detail}>
           <h2 style={styles.detailTitle}>
-            {props.selected.item.title} — TCIN {props.selected.item.tcin}
+            {_props!.selected.item.title} — TCIN {_props!.selected.item.tcin}
           </h2>
 
           <div style={styles.section}>
             <div style={styles.label}>Policy document</div>
             <div style={styles.value}>
-              {props.selected.submission.policyFileName ? (
-                <span style={styles.link}>{props.selected.submission.policyFileName}</span>
+              {_props!.selected.submission.policyFileName ? (
+                <span style={styles.link}>{_props!.selected.submission.policyFileName}</span>
               ) : (
                 '—'
               )}
@@ -173,24 +178,24 @@ function ReviewerConsoleContent(props: any) {
             </div>
           </div>
 
-          {props.selected.submission.metadata && (
+          {_props!.selected.submission.metadata && (
             <div style={styles.section}>
               <div style={styles.label}>Policy metadata</div>
               <div style={styles.grid}>
-                <div><div style={styles.label}>Effective date</div><div style={styles.value}>{props.selected.submission.metadata.effectiveDate || '—'}</div></div>
-                <div><div style={styles.label}>Expiration date</div><div style={styles.value}>{props.selected.submission.metadata.expirationDate || '—'}</div></div>
-                <div><div style={styles.label}>Covered products</div><div style={styles.value}>{props.selected.submission.metadata.coveredProducts ?? '—'}</div></div>
-                <div><div style={styles.label}>Enforcement</div><div style={styles.value}>{props.selected.submission.metadata.enforcementMechanism ?? '—'}</div></div>
-                <div><div style={styles.label}>Contact</div><div style={styles.value}>{props.selected.submission.metadata.contactName} / {props.selected.submission.metadata.contactEmail}</div></div>
+                <div><div style={styles.label}>Effective date</div><div style={styles.value}>{_props!.selected.submission.metadata.effectiveDate || '—'}</div></div>
+                <div><div style={styles.label}>Expiration date</div><div style={styles.value}>{_props!.selected.submission.metadata.expirationDate || '—'}</div></div>
+                <div><div style={styles.label}>Covered products</div><div style={styles.value}>{_props!.selected.submission.metadata.coveredProducts ?? '—'}</div></div>
+                <div><div style={styles.label}>Enforcement</div><div style={styles.value}>{_props!.selected.submission.metadata.enforcementMechanism ?? '—'}</div></div>
+                <div><div style={styles.label}>Contact</div><div style={styles.value}>{_props!.selected.submission.metadata.contactName} / {_props!.selected.submission.metadata.contactEmail}</div></div>
               </div>
             </div>
           )}
 
-          {props.selected.submission.attestations && (
+          {_props!.selected.submission.attestations && (
             <div style={styles.section}>
               <div style={styles.label}>Attestations</div>
               <div style={styles.value}>
-                Specific: {props.selected.submission.attestations.specific ? 'Yes' : 'No'} · Uniform: {props.selected.submission.attestations.uniform ? 'Yes' : 'No'} · Enforced: {props.selected.submission.attestations.enforced ? 'Yes' : 'No'}
+                Specific: {_props!.selected.submission.attestations.specific ? 'Yes' : 'No'} · Uniform: {_props!.selected.submission.attestations.uniform ? 'Yes' : 'No'} · Enforced: {_props!.selected.submission.attestations.enforced ? 'Yes' : 'No'}
               </div>
             </div>
           )}
@@ -198,19 +203,19 @@ function ReviewerConsoleContent(props: any) {
           <div style={styles.section}>
             <div style={styles.label}>Comp Intel</div>
             <div style={styles.grid}>
-              <div><div style={styles.label}>Market price</div><div style={styles.value}>$ {props.selected.item.compIntel.marketPrice.toLocaleString()}</div></div>
-              <div><div style={styles.label}>Submitted MAP</div><div style={styles.value}>$ {(props.selected.submission.mapValue ?? 0).toLocaleString()}</div></div>
+              <div><div style={styles.label}>Market price</div><div style={styles.value}>$ {_props!.selected.item.compIntel.marketPrice.toLocaleString()}</div></div>
+              <div><div style={styles.label}>Submitted MAP</div><div style={styles.value}>$ {(_props!.selected.submission.mapValue ?? 0).toLocaleString()}</div></div>
               <div><div style={styles.label}>Delta</div><div style={styles.value}>
-                $ {((props.selected.submission.mapValue ?? 0) - props.selected.item.compIntel.marketPrice).toFixed(2)}
-                ({props.selected.item.compIntel.marketPrice
-                  ? ((((props.selected.submission.mapValue ?? 0) - props.selected.item.compIntel.marketPrice) / props.selected.item.compIntel.marketPrice) * 100).toFixed(1)
+                $ {((_props!.selected.submission.mapValue ?? 0) - _props!.selected.item.compIntel.marketPrice).toFixed(2)}
+                ({_props!.selected.item.compIntel.marketPrice
+                  ? ((((_props!.selected.submission.mapValue ?? 0) - _props!.selected.item.compIntel.marketPrice) / _props!.selected.item.compIntel.marketPrice) * 100).toFixed(1)
                   : 0}%)
               </div></div>
-              <div><div style={styles.label}>Timestamp</div><div style={styles.value}>{props.selected.item.compIntel.marketTimestamp}</div></div>
-              <div><div style={styles.label}>Confidence</div><div style={styles.value}>{props.selected.item.compIntel.confidence}</div></div>
+              <div><div style={styles.label}>Timestamp</div><div style={styles.value}>{_props!.selected.item.compIntel.marketTimestamp}</div></div>
+              <div><div style={styles.label}>Confidence</div><div style={styles.value}>{_props!.selected.item.compIntel.confidence}</div></div>
             </div>
             <div style={{ marginTop: 8 }}>
-              {props.getFlagsForSubmission(props.selected.submission.id).map((f) => (
+              {_props!.getFlagsForSubmission(_props!.selected.submission.id).map((f) => (
                 <span
                   key={f.id}
                   style={{
@@ -224,48 +229,48 @@ function ReviewerConsoleContent(props: any) {
             </div>
           </div>
 
-          {props.selected.submission.reviewerComment && (
+          {_props!.selected.submission.reviewerComment && (
             <div style={styles.section}>
-              <div style={styles.label}>Your previous props.comment</div>
-              <div style={{ ...styles.value, padding: '0.5rem', background: '#f8fafc', borderRadius: 6 }}>{props.selected.submission.reviewerComment}</div>
+              <div style={styles.label}>Your previous _props!.comment</div>
+              <div style={{ ...styles.value, padding: '0.5rem', background: '#f8fafc', borderRadius: 6 }}>{_props!.selected.submission.reviewerComment}</div>
             </div>
           )}
 
-          {props.canRequestOrNotAccept && (
+          {_props!.canRequestOrNotAccept && (
             <div style={styles.section}>
               <div style={styles.label}>Comment (required for Request changes / Not accept)</div>
               <textarea
                 style={styles.textarea}
-                placeholder="Enter props.comment..."
-                value={props.comment}
-                onChange={(e) => props.setComment(e.target.value)}
-                aria-required={props.canRequestOrNotAccept}
+                placeholder="Enter _props!.comment..."
+                value={_props!.comment}
+                onChange={(e) => _props!.setComment(e.target.value)}
+                aria-required={_props!.canRequestOrNotAccept}
               />
             </div>
           )}
 
-          {props.effectiveStatus === 'UNDER_REVIEW' && (
+          {_props!.effectiveStatus === 'UNDER_REVIEW' && (
             <div style={styles.actions}>
               <button
                 type="button"
                 style={{ ...styles.btn, ...styles.btnAccept }}
-                onClick={props.onAccept}
+                onClick={_props!.onAccept}
               >
                 Accept
               </button>
               <button
                 type="button"
-                style={{ ...styles.btn, ...styles.btnRequest, ...(props.commentRequired ? styles.btnDisabled : {}) }}
-                onClick={props.onRequestChanges}
-                disabled={props.commentRequired}
+                style={{ ...styles.btn, ...styles.btnRequest, ...(_props!.commentRequired ? styles.btnDisabled : {}) }}
+                onClick={_props!.onRequestChanges}
+                disabled={_props!.commentRequired}
               >
                 Request changes
               </button>
               <button
                 type="button"
-                style={{ ...styles.btn, ...styles.btnNotAccept, ...(props.commentRequired ? styles.btnDisabled : {}) }}
-                onClick={props.onNotAccept}
-                disabled={props.commentRequired}
+                style={{ ...styles.btn, ...styles.btnNotAccept, ...(_props!.commentRequired ? styles.btnDisabled : {}) }}
+                onClick={_props!.onNotAccept}
+                disabled={_props!.commentRequired}
               >
                 Not accept
               </button>
