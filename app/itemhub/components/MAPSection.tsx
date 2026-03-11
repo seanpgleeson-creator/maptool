@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { Item, MAPSubmission, MAPSubmissionMetadata, MAPAttestations } from '@/lib/itemhub/types'
 import type { CoveredProducts, EnforcementMechanism } from '@/lib/itemhub/types'
 import { createDraftSubmission, createNotProvidedSubmission } from '@/lib/itemhub/store'
+import { ITEMHUB_STRINGS } from '@/lib/itemhub/strings'
 
 const STATUS_LABELS: Record<string, string> = {
   NOT_PROVIDED: 'Not provided',
@@ -137,7 +138,7 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
         <span style={styles.badge}>{STATUS_LABELS[effectiveStatus] ?? effectiveStatus}</span>
       </div>
       <p style={styles.helper}>
-        MAP is optional. If provided, a specific, uniformly enforced policy is required and will be reviewed by Target.
+        {ITEMHUB_STRINGS.MAP_HELPER_SHORT}
       </p>
 
       <div style={styles.fieldset}>
@@ -180,7 +181,7 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
               }}
               style={styles.input}
             />
-            {mapExceedsMsrp && <p style={styles.error}>MAP cannot exceed MSRP.</p>}
+            {mapExceedsMsrp && <p style={styles.error}>{ITEMHUB_STRINGS.MAP_EXCEEDS_MSRP}</p>}
           </div>
 
           <div style={styles.fieldset}>
@@ -279,10 +280,10 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
           )}
 
           <p style={styles.copy}>
-            MAP is optional. If you provide a MAP value, you must upload a MAP policy that is specific and uniformly enforced with no exceptions.
+            {ITEMHUB_STRINGS.MAP_POLICY_REQUIREMENT}
           </p>
           <p style={styles.copy}>
-            MAP prices are not automatically used as a guardrail for price decisions. Price decisions are at the sole discretion of Target Corporation.
+            {ITEMHUB_STRINGS.GUARDRAIL_DISCRETION}
           </p>
 
           {attestations && (
@@ -336,10 +337,10 @@ export function MAPSection({ item, submission, onSubmissionChange, onSubmitForRe
 
       {(showSubmittedBanner || sub.status === 'UNDER_REVIEW' || sub.status === 'SUBMITTED') && (
         <div style={styles.banner} role="alert">
-          <p style={{ margin: 0 }}>Your MAP submission will be reviewed by Target. We may request clarification before it can be used.</p>
+          <p style={{ margin: 0 }}>{ITEMHUB_STRINGS.SUBMISSION_BANNER}</p>
           {hasNearOrAboveMarketFlag && (
             <p style={{ margin: '0.5rem 0 0', fontSize: '0.8125rem' }}>
-              Your MAP is close to current market observations. Target may follow up during review.
+              {ITEMHUB_STRINGS.COMP_NOTE_NEAR_MARKET}
             </p>
           )}
         </div>

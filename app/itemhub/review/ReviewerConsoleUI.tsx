@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import type { MAPSubmission, Item, MerchantFlag } from '@/lib/itemhub/types'
+import { ITEMHUB_STRINGS } from '@/lib/itemhub/strings'
 
 const STATUS_LABELS: Record<string, string> = {
   SUBMITTED: 'Submitted',
@@ -14,9 +15,9 @@ const STATUS_LABELS: Record<string, string> = {
 }
 
 const FLAG_LABELS: Record<string, string> = {
-  MAP_ABOVE_MARKET: 'MAP above market price',
-  MAP_NEAR_MARKET: 'MAP near market price',
-  COMP_INTEL_STALE: 'Market data may be stale',
+  MAP_ABOVE_MARKET: ITEMHUB_STRINGS.FLAG_MAP_ABOVE_MARKET,
+  MAP_NEAR_MARKET: ITEMHUB_STRINGS.FLAG_MAP_NEAR_MARKET,
+  COMP_INTEL_STALE: ITEMHUB_STRINGS.FLAG_COMP_INTEL_STALE,
 }
 
 export function getEffectiveStatus(sub: MAPSubmission): string {

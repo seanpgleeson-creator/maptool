@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const styles = {
   bar: {
@@ -42,6 +43,27 @@ const styles = {
     alignItems: 'center',
     gap: '1rem',
   },
+  modeToggle: {
+    display: 'flex',
+    alignItems: 'center',
+    border: '1px solid #e2e8f0',
+    borderRadius: 8,
+    overflow: 'hidden',
+    fontSize: '0.8125rem',
+  },
+  modeBtn: {
+    padding: '0.4rem 0.75rem',
+    border: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
+    color: '#64748b',
+    textDecoration: 'none',
+    fontWeight: 500,
+  },
+  modeBtnActive: {
+    background: '#2563eb',
+    color: '#fff',
+  },
   iconBtn: {
     width: 36,
     height: 36,
@@ -80,6 +102,9 @@ const styles = {
 }
 
 export function TopBar() {
+  const pathname = usePathname()
+  const isReviewer = pathname?.startsWith('/itemhub/review') ?? false
+
   return (
     <header style={styles.bar}>
       <Link href="/itemhub" style={styles.logo}>
@@ -94,6 +119,30 @@ export function TopBar() {
         readOnly
       />
       <div style={styles.right}>
+        <div style={styles.modeToggle} role="tablist" aria-label="View as">
+          <Link
+            href="/itemhub"
+            role="tab"
+            aria-selected={!isReviewer}
+            style={{
+              ...styles.modeBtn,
+              ...(!isReviewer ? styles.modeBtnActive : {}),
+            }}
+          >
+            Vendor
+          </Link>
+          <Link
+            href="/itemhub/review"
+            role="tab"
+            aria-selected={isReviewer}
+            style={{
+              ...styles.modeBtn,
+              ...(isReviewer ? styles.modeBtnActive : {}),
+            }}
+          >
+            Target Reviewer
+          </Link>
+        </div>
         <button type="button" style={styles.iconBtn} aria-label="Help">
           ?
         </button>

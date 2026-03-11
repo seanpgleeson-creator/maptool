@@ -100,11 +100,13 @@ Feature-driven order. Tasks marked **[PARALLEL]** can be executed in parallel wi
 
 *Feature: mode toggle (if not done in 5.1), all copy, styling pass.*
 
-- [ ] **6.1** Ensure Vendor | Target Reviewer mode toggle is in header (or clearly accessible) so prototype requires no auth.
-- [ ] **6.2** All UI strings from spec §15 / uiitemhub §12: vendor context, MAP helper, Target independence, guardrail eligibility, submission banner, comp note, MAP > MSRP error, reviewer flag labels ("MAP above market price", "MAP near market price", "Market data may be stale").
-- [ ] **6.3** Styling pass: Tailwind tokens throughout (bg-slate-50, cards, borders, primary blue, orange needs-attention, progress bars, spacing 16–24px). Match existing ItemHub look and feel per uiitemhub §0 and §10.
+- [x] **6.1** Ensure Vendor | Target Reviewer mode toggle is in header (or clearly accessible) so prototype requires no auth.
+- [x] **6.2** All UI strings from spec §15 / uiitemhub §12: vendor context, MAP helper, Target independence, guardrail eligibility, submission banner, comp note, MAP > MSRP error, reviewer flag labels ("MAP above market price", "MAP near market price", "Market data may be stale").
+- [x] **6.3** Styling pass: Tailwind tokens throughout (bg-slate-50, cards, borders, primary blue, orange needs-attention, progress bars, spacing 16–24px). Match existing ItemHub look and feel per uiitemhub §0 and §10.
 
 **Parallel:** 6.1, 6.2, and 6.3 can be done in parallel.
+
+**Notes:** Mode toggle added to TopBar (Vendor | Target Reviewer links); TopBar shown on both /itemhub and /itemhub/review. All copy centralized in `lib/itemhub/strings.ts`. Styling uses inline tokens matching spec (slate-50, blue primary, orange alert, 16–24px spacing); project does not use Tailwind.
 
 ---
 
@@ -112,10 +114,10 @@ Feature-driven order. Tasks marked **[PARALLEL]** can be executed in parallel wi
 
 *Verify against PRD and spec §13.*
 
-- [ ] **7.1** Page matches ItemHub Update Item / Pricing layout; vendor context and MAP optional + gated messaging explicit.
-- [ ] **7.2** MAP optional and gated by "MAP applies" radio; policy + metadata + attestations required only when MAP applies; Submit creates review state and merchant flags when comp conditions hit.
-- [ ] **7.3** Reviewer console shows Comp Intel and flags; Accept / Request changes / Not accept reflect in vendor view; guardrail eligibility only true when Accepted.
-- [ ] **7.4** Seed scenarios: MAP 180 vs 185 no flag; MAP 190 vs 188 near-market flag; MAP 210 vs 185 above-market flag; Item C stale warning.
+- [x] **7.1** Page matches ItemHub Update Item / Pricing layout; vendor context and MAP optional + gated messaging explicit.
+- [x] **7.2** MAP optional and gated by "MAP applies" radio; policy + metadata + attestations required only when MAP applies; Submit creates review state and merchant flags when comp conditions hit.
+- [x] **7.3** Reviewer console shows Comp Intel and flags; Accept / Request changes / Not accept reflect in vendor view; guardrail eligibility only true when Accepted.
+- [x] **7.4** Seed scenarios: MAP 180 vs 185 no flag; MAP 190 vs 188 near-market flag; MAP 210 vs 185 above-market flag; Item C stale warning.
 
 ---
 

@@ -1,5 +1,6 @@
 'use client'
 
+import { ITEMHUB_STRINGS } from '@/lib/itemhub/strings'
 import { AttributeGroupsList } from './AttributeGroupsList'
 import { LeftNav } from './LeftNav'
 import { TopBar } from './TopBar'
@@ -127,8 +128,7 @@ export function VendorShell({ children, itemCount = 3 }: VendorShellProps) {
         <main style={styles.main}>
           <div style={styles.breadcrumb}>My Items / Update Item</div>
           <div style={styles.vendorContext}>
-            You are signed in as a Vendor user submitting item attributes and pricing information to
-            Target.
+            {ITEMHUB_STRINGS.VENDOR_CONTEXT}
           </div>
           <h1 style={styles.title}>Update Item</h1>
           <div style={styles.statusRow}>
